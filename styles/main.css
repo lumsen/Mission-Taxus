@@ -8,6 +8,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  pointer-events: none; /* Disable all pointer events */
 }
 
 /* Styling for the terminal */
@@ -61,6 +62,7 @@ body {
   z-index: 1;
   overflow-y: auto;
   flex-grow: 1;
+  pointer-events: auto; /* Re-enable pointer events for specific elements */
 }
 
 #output::-webkit-scrollbar {
@@ -74,7 +76,12 @@ body {
   align-items: center;
   z-index: 1;
   width: 100%;
-  color: #135513; /* Slightly different shade of green */
+  color: #208d20; /* Slightly different shade of green */
+  pointer-events: auto; /* Re-enable pointer events for specific elements */
+  border: none; /* Remove border */
+  padding: 0; /* Remove padding */
+  border-radius: 0; /* Remove border radius */
+  box-shadow: 0 0 1px #00cc00; /* Even more subtle shadow to indicate input field */
 }
 
 /* Styling for prompt */
@@ -91,11 +98,12 @@ body {
   font-size: 1em;
   width: 100%;
   outline: none;
+  pointer-events: auto; /* Re-enable pointer events for specific elements */
 }
 
 /* Styling for user input in displayed output */
 .output.user-input {
-  color: #135513; /* Slightly different shade of green */
+  color: #208d20; /* Slightly different shade of green */
 }
 
 /* Styling for output lines */
