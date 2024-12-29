@@ -27,6 +27,9 @@
         const cursor = document.querySelector(".cursor");
         const output = document.getElementById("output");
 
+        // Ensure output is accessible in commands.js
+        window.output = output;
+
         // Command and Project List for Autocomplete
         const commandList = Object.keys(commandDescriptions).concat(
           Object.keys(projects)
