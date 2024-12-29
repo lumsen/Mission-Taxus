@@ -38,8 +38,9 @@ body {
   justify-content: center;
   align-items: center;
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 100%;
   height: 100%;
   pointer-events: none;
@@ -47,10 +48,17 @@ body {
 
 /* Styling for ASCII art */
 #ascii-art {
-  color: red;
-  opacity: 0.5;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  color: #00ff00;
+  opacity: 0.1;
   font-family: "Courier New", Courier, "Lucida Console", monospace;
   white-space: pre;
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* Styling for output */
