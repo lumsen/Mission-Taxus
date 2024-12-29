@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Intranet TAXUS</title>
     <style>
+      /* Styling for the body */
       body {
         background-color: #2e2e2e; /* Anthrazit */
         color: #00ff00; /* Terminalgrün */
@@ -15,6 +16,7 @@
         justify-content: center;
         align-items: center;
       }
+      /* Styling for the terminal */
       #terminal {
         background-color: #2e2e2e; /* Anthrazit */
         color: #00ff00; /* Terminalgrün */
@@ -29,10 +31,12 @@
         flex-direction: column;
         justify-content: flex-end;
       }
+      /* Hide scrollbar */
       #terminal::-webkit-scrollbar {
         width: 0px;
         background: transparent; /* Make scrollbar invisible */
       }
+      /* Styling for ASCII art container */
       #ascii-art-container {
         display: flex;
         justify-content: center;
@@ -44,12 +48,14 @@
         height: 100%;
         pointer-events: none;
       }
+      /* Styling for ASCII art */
       #ascii-art {
         color: red;
         opacity: 0.5;
         font-family: "Courier New", Courier, "Lucida Console", monospace; /* Typische Terminalschrift */
         white-space: pre;
       }
+      /* Styling for output */
       #output {
         z-index: 1;
         overflow-y: auto;
@@ -59,15 +65,18 @@
         width: 0px;
         background: transparent; /* Make scrollbar invisible */
       }
+      /* Styling for input container */
       #input-container {
         display: flex;
         align-items: center;
         z-index: 1;
         width: 100%;
       }
+      /* Styling for prompt */
       #prompt {
         margin-right: 5px;
       }
+      /* Styling for input line */
       #input-line {
         background: none;
         border: none;
@@ -77,15 +86,18 @@
         width: 100%;
         outline: none;
       }
+      /* Styling for output lines */
       .output {
         margin: 0 0 10px 0; /* Margin to separate output lines */
       }
+      /* Styling for cursor */
       .cursor {
         display: inline-block;
         background-color: #00ff00;
         margin-left: 2px;
         animation: blink 1s steps(2, start) infinite;
       }
+      /* Blink animation for cursor */
       @keyframes blink {
         0% {
           opacity: 1;
@@ -97,6 +109,7 @@
           opacity: 1;
         }
       }
+      /* Color classes */
       .color1 {
         color: #ff4500;
       } /* Orange Red */
@@ -106,8 +119,11 @@
       .color3 {
         color: #32cd32;
       } /* Lime Green */
+	  .color4 {
+        color: #9400d3;
+      } /* Darkviolet */
 
-      /* Anpassungen für mobile Geräte */
+      /* Adjustments for mobile devices */
       @media (max-width: 600px) {
         #terminal {
           width: 100%;
@@ -127,24 +143,33 @@
     <div id="terminal">
       <div id="ascii-art-container">
         <pre id="ascii-art">
-                  * *    
-               *    *  *
-          *  *    *     *  *
-         *     *    *  *    *
-     * *   *    *    *    *   *
-     *     *  *    * * .#  *   *
-     *   *     * #.  .# *   *
-      *     "#.  #: #" * *    *
-     *   * * "#. ##"       *
-       *       "###
-                 "##
-                  ##.
-                  .##:
-                  :###
-                  ;###
-                ,####.
-    /\/\/\/\/\/.######.\/\/\/\/\
-             Station TAXUS
+                             ****         #                                                  
+                        ###***++****====+****                                                
+                         ****+*****+=+**++*****+***#*#        +++*                           
+                 #****   #**#*=++==++=+*********++****#   #*+*+++***                         
+                 **##**+**#*++*++++++***+*+-=+#**+=  ******+** +****                         
+                **#+*%%******##***#***#* *== *****##*+****++*+*++ ****                       
+               ***+#%##%*#*+#***#%*%%*+++=*******+++=**++====++#***+===+***#+                
+              *****++*#***+=+++-+*##%##%####%#*****#*****+*++=+=- =-****+++***               
+                *#**#*++*+***++*+**#*###%*###**####**#++*= *+++===+**+=+*******              
+               ##***+**++********++*****##+*%#*#*++++++=*** ===-*#+*++===++****              
+          ******#*********#*=**++*+*#+******##**++***++=***+++*********+****+++***           
+       +#+*++**+=*+**+* +**+-- ++**+**=        +**+*++       +###***+++++  **#**+**          
+      **+*#****+++#%#*+***=+**++*+++**====++ ==     +**+++=-= =--=#####%##*++ **++           
+      *##*#******++*#*+#*  ==***++*****+*+*   ++****+***++++****** *#%##%##*++++*#           
+       * #****+*#****=+***%%###%%%#++**######*#**##*###%##%####*+**= +######*+********       
+       +####%#######**#%%#+*#*+##**###%%%##*##*#%%%#%#+###%#%##****+++*%#*#*##*+# ##***      
+       =*+##*****##%#%**+*#*#+*##+*****##%*%*++%%#*##+*#% ##***%%*+*###%%%%###*****#*+=      
+         *#*##%%%#####**#@%%%*######%%*+*%%*# %%#++*+*#***#%#*++*#*+**#@%*#####*#*+*++**      
+         +  *##%#%%%***= *****%      %%%%#*#*#**#%****###        #    **=-*#**                
+         ****+***#%%%####%            ####**=-+##*#*#**#             #*+***#                 
+        **#%%*+*##*#*####             ###***+-+**+=*##*                                      
+         #####*##*#+*                %%##*+*#+***++*#####                                    
+             *** +*               %%%%%#+**#+=+++++**######*                                 
+                                ########%*#*#%%#**+*####**###                                
+                                #%#### %#+*+*    %#*%#*+*## %#*                              
+                                %#*  #**#**###    ##%###*+                                   
+              /\/\/\/\/\/\/\/\/\/\/### Station TAXUS #*#***\/\/\/\/\/\/\/\/\/\/\            
             </pre
         >
       </div>
@@ -161,7 +186,7 @@
         const cursor = document.querySelector(".cursor");
         const output = document.getElementById("output");
 
-        // Beschreibungstexte für die Befehle
+        // Command descriptions
         const commandDescriptions = {
           clear: "Löscht das Terminalfenster.",
           help: "Zeigt die Liste der verfügbaren Befehle an.",
@@ -173,30 +198,25 @@
             'Zeigt das Organigram der Forschungseinrichtung "Station Taxus" an.',
         };
 
-        // Funktionalität der Befehle
+        // Command functionalities
         const commands = {
-          clear: function () {
+          clear: () => {
             output.innerHTML = "";
           },
-          help: function () {
+          help: () => {
             return Object.keys(commandDescriptions)
               .map((cmd) => `<b>${cmd}</b>: ${commandDescriptions[cmd]}`)
               .join("\n");
           },
-          about: function () {
-            return "Dies ist eine simulierte Terminal-Seite.";
-          },
-          projects: function () {
+          about: () => "Dies ist eine simulierte Terminal-Seite.",
+          projects: () => {
             const projectList = Object.keys(projects)
               .filter((proj) => !proj.startsWith("x"))
               .join(", ");
             return `Verfügbare Projekte: ${projectList}`;
           },
-          contact: function () {
-            return "Kontakt: email@example.com";
-          },
-          organigram: function () {
-            return `
+          contact: () => "Kontakt: email@example.com",
+          organigram: () => `
 Organigram der Forschungseinrichtung "Station Taxus"
     Direktor: Dr. Sarah Schmidt
     |
@@ -223,7 +243,7 @@ Organigram der Forschungseinrichtung "Station Taxus"
           },
         };
 
-        // Projektdefinitionen
+        // Project definitions
         const projects = {
           gasPipeline: `
 Projektname: <span class="color1">Gas Pipeline Expansion</span>
@@ -271,6 +291,17 @@ Ziele:
     3. Erhöhung der Sicherheit für Benutzer
 Status: In Bearbeitung
 Verantwortlicher: Dr. Xenia Zahn
+                `,
+          miceMore: `
+Projektname: <span class="color4">Mice and more</span>
+Beschreibung:
+    Testung der Orientierungsfähigkeit unter Einfluss von Substanz xTra im Vergleich zu N2O und Placebo.
+Ziele:
+    1. Ermittlung von Kontraindikationen
+    2. Beurteilung der Wirkung von xTra auf das Orientierungsvermögen
+    3. Vergleich zu Experimenten mit Bots
+Status: In Bearbeitung
+Verantwortlicher: Dr. Xavier Charles 
                 `,
         };
 
