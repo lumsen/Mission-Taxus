@@ -1,0 +1,145 @@
+/* Styling for the body */
+body {
+  background-color: #2e2e2e; /* Anthrazit */
+  color: #00ff00; /* Terminalgrün */
+  font-family: "Courier New", Courier, "Lucida Console", monospace; /* Typische Terminalschrift */
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Styling for the terminal */
+#terminal {
+  background-color: #2e2e2e; /* Anthrazit */
+  color: #00ff00; /* Terminalgrün */
+  width: 80%;
+  height: 70%;
+  padding: 20px;
+  border: 1px solid #00ff00;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+/* Hide scrollbar */
+#terminal::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+/* Styling for ASCII art container */
+#ascii-art-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Styling for ASCII art */
+#ascii-art {
+  color: red;
+  opacity: 0.5;
+  font-family: "Courier New", Courier, "Lucida Console", monospace;
+  white-space: pre;
+}
+
+/* Styling for output */
+#output {
+  z-index: 1;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+#output::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+/* Styling for input container */
+#input-container {
+  display: flex;
+  align-items: center;
+  z-index: 1;
+  width: 100%;
+}
+
+/* Styling for prompt */
+#prompt {
+  margin-right: 5px;
+}
+
+/* Styling for input line */
+#input-line {
+  background: none;
+  border: none;
+  color: #00ff00;
+  font-family: "Courier New", Courier, "Lucida Console", monospace;
+  font-size: 1em;
+  width: 100%;
+  outline: none;
+}
+
+/* Styling for output lines */
+.output {
+  margin: 0 0 10px 0;
+}
+
+/* Styling for cursor */
+.cursor {
+  display: inline-block;
+  background-color: #00ff00;
+  margin-left: 2px;
+  animation: blink 1s steps(2, start) infinite;
+}
+
+/* Blink animation for cursor */
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Color classes */
+.color1 {
+  color: #ff4500;
+}
+.color2 {
+  color: #1e90ff;
+}
+.color3 {
+  color: #32cd32;
+}
+.color4 {
+  color: #9400d3;
+}
+
+/* Adjustments for mobile devices */
+@media (max-width: 600px) {
+  #terminal {
+    width: 100%;
+    height: 90%;
+    padding: 10px;
+  }
+  #input-line {
+    font-size: 1.2em;
+  }
+  #ascii-art {
+    font-size: 0.8em;
+  }
+}
