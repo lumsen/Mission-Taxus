@@ -24,12 +24,11 @@
        +#+*++**+=*+**+* +**+-- ++**+**=        +**+*++       +###***+++++  **#**+**          
       **+*#****+++#%#*+***=+**++*+++**====++ ==     +**+++=-= =--=#####%##*++ **++           
       *##*#******++*#*+#*  ==***++*****+*+*   ++****+***++++****** *#%##%##*++++*#           
-       * #****+*#****+*++*********##*+===++=+***++***#%#####*+*+***+*%%####*******+          
-       =+++***+*#****=+***%%###%%%#++**######*#**##*###%##%####*+**= +######*+********       
+       * #****+*#****=+***%%###%%%#++**######*#**##*###%##%####*+**= +######*+********       
        +####%#######**#%%#+*#*+##**###%%%##*##*#%%%#%#+###%#%##****+++*%#*#*##*+# ##***      
        =*+##*****##%#%**+*#*#+*##+*****##%*%*++%%#*##+*#% ##***%%*+*###%%%%###*****#*+=      
-         *#*##%%%#####**#@%%%*######%%*+*%%*# %%#*+ #*#%%#### **######%@%%%%#****#+*+=+      
-          +#*****+*********+ #%%%%%%%%+**###% %#++*+*#***#%#*++*#*+**#@%*#####*#*+*++**      
+         *#*##%%%#####**#@%%%*######%%*+*%%*# %%#++*+*#***#%#*++*#*+**#@%*#####*#*+*++**      
+         +#*****+*********+ #%%%%%%%%+**###% %#++*+*#***#%#*++*#*+**#@%*#####*#*+*++**      
          *+ +++*+++++=** *+**     %%%%*+*##%%%###%%#++*#%%***#%%###%%####***##*#****#        
        +**#+**+= + =****####**     %@%%#++*%%#***%##=*#####%     *#*##**##*##*##             
        +#*+*#**+++**####%##  ##*#%#**#%%#+**##*###*+#%#**#*#*++ *##**+***##*+=               
@@ -80,6 +79,32 @@
           }, 0);
         }
 
+        // Function to replace words with random characters and change color of each character individually
+        function redactWords(element, words) {
+          const wordList = words.split(",");
+          wordList.forEach(word => {
+            const regex = new RegExp(`\\b${word.trim()}\\b`, "gi");
+            const matches = element.innerHTML.match(regex);
+            if (matches) {
+              matches.forEach(match => {
+                let redactedText = match.split('').map(char => `<span>${char}</span>`).join('');
+                element.innerHTML = element.innerHTML.replace(regex, `<span class="portfolio-experiment">${redactedText}</span>`);
+                const spans = element.querySelectorAll('.portfolio-experiment span');
+                spans.forEach((span, index) => {
+                  setTimeout(() => {
+                    setTimeout(() => {
+                      const randomChar = String.fromCharCode(33 + Math.floor(Math.random() * 94)); // Random character from '!' to '~'
+                      const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`; // Random color
+                      span.style.color = randomColor;
+                      span.textContent = randomChar;
+                    }, index * (Math.random() * 50 + 50)); // Delay between 50-100ms for each character change
+                  }, Math.random() * 100 + 500); // Initial delay between 50-150ms
+                });
+              });
+            }
+          });
+        }
+
         // Execute command and display output
         function executeCommand(command) {
           const args = command.split(" ");
@@ -99,11 +124,12 @@
             responseElement.className = "output";
             responseElement.innerHTML = response.replace(/\n/g, "<br>");
             output.appendChild(responseElement);
+            redactWords(responseElement, "xrayAnalysis,Dr. Sarah Schmidt"); // Replace "word1,word2" with your comma-separated list
           }
 
           if (args[0] !== "clear") {
             const inputElement = document.createElement("p");
-            inputElement.className = "output";
+            inputElement.className = "output user-input";
             inputElement.textContent = `user@TAXUS.net> ${command}`;
             output.appendChild(inputElement);
           }
@@ -119,7 +145,6 @@
             matches = commandList.filter((cmd) => cmd.startsWith(input));
           } else if (args[0] === "projects" && args.length === 2) {
             matches = Object.keys(projects)
-              .filter((proj) => !proj.startsWith("x"))
               .map((proj) => "projects " + proj)
               .filter((cmd) => cmd.startsWith(args[0] + " " + args[1]));
           }

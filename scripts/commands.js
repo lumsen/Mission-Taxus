@@ -23,7 +23,7 @@ const commands = {
   },
   projects: function () {
     const projectList = Object.keys(projects)
-      .filter((proj) => !proj.startsWith("x"))
+      //.filter((proj) => !proj.startsWith("x"))
       .join(", ");
     return `Verfügbare Projekte: ${projectList}`;
   },
