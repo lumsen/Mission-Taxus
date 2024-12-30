@@ -5,7 +5,7 @@ const commandDescriptions = {
   about: "Zeigt Informationen über diese simulierte Terminal-Seite an.",
   projects: 'Zeigt die verfügbaren Projekte an, außer Projekten, die mit "x" beginnen.',
   contact: "Zeigt Kontaktinformationen an.",
-  organigram: 'Zeigt das Organigram der Forschungseinrichtung "Station Taxus" an.',
+  organigramm: 'Zeigt das Organigramm der Forschungseinrichtung "Station Taxus" an.',
 };
 
 // Funktionalität der Befehle
@@ -30,7 +30,7 @@ const commands = {
   contact: function () {
     return "Kontakt: email@example.com";
   },
-  organigram: function () {
+  organigramm: function () {
     return `
 Organigramm der Forschungseinrichtung "Station Taxus"
     Stationsleitung: Dr. Helen Warden
