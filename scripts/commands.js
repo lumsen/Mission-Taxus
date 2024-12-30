@@ -5,6 +5,7 @@ const commandDescriptions = {
   about: "Zeigt Informationen über diese simulierte Terminal-Seite an.",
   projects: 'Zeigt die verfügbaren Projekte an, außer Projekten, die mit "x" beginnen.',
   contact: "Zeigt Kontaktinformationen an.",
+  personal: "Zeigt die Personalliste an"
   organigramm: 'Zeigt das Organigramm der Forschungseinrichtung "Station Taxus" an.',
 };
 
@@ -29,6 +30,9 @@ const commands = {
   },
   contact: function () {
     return "Kontakt: email@example.com";
+  },
+    personal: function () {
+    return "Personalliste Beispiel";
   },
   organigramm: function () {
     return `
