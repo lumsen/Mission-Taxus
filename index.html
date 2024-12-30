@@ -133,7 +133,7 @@
             responseElement.className = "output";
             responseElement.innerHTML = response.replace(/\n/g, "<br>");
             output.appendChild(responseElement);
-            redactWords(responseElement, "xrayAnalysis,Dr. Sarah Schmidt"); // Replace "word1,word2" with your comma-separated list
+            redactWords(responseElement, "xrayAnalysis,Dr. Sarah Schmidt,Fehlermeldung"); // Replace "word1,word2" with your comma-separated list
           }
 
           if (args[0] !== "clear") {
