@@ -32,28 +32,47 @@ const commands = {
   },
   organigram: function () {
     return `
-Organigram der Forschungseinrichtung "Station Taxus"
-    Direktor: Dr. Sarah Schmidt
+Organigramm der Forschungseinrichtung "Station Taxus"
+    Stationsleitung: Dr. Helen Warden
+    Stellv. Stationsleitung: Dr. Simon Verner
     |
-    +-- Leiter A: Max Mustermann
-    |   +-- Forscher A1: Anna Müller
-    |   +-- Forscher A2: Bernd Schmitz
-    |   +-- Forscher A3: Claudia Klein
+    +-- Medizin (SC-T/MZ)
+    |   Teamleiter medizinische Forschung: Dr. Konrad Schirmer
+    |   +-- Arzt: Dr. Julian Zellmann
+    |   |   +-- Arzt: Dr. Robert Sievers
+    |   |   +-- Pädiaterin: Dr. Marion Nestler
+    |   +-- Pathologe: Dr. Franz Limbus
+    |   |   +-- Pflegefachmann: Simon Nachtigall
     |
-    +-- Leiter B: Erika Musterfrau
-    |   +-- Forscher B1: Daniel Braun
-    |   +-- Forscher B2: Eva Fischer
-    |   +-- Forscher B3: Frank Meier
+    +-- Medizin-Psychologie (SC-T/MPZ)
+    |   Teamleiter Psychologie: Dr. Stefan Kramme
+    |   +-- Psychiater: Dr. Torsten Oberdorfer
+    |   +-- Psychologische Psychotherapeutin: Maria Riedmann
     |
-    +-- Leiter C: John Doe
-        +-- Forscher C1: Gina Schulz
-        +-- Forscher C2: Hans Becker
-        +-- Forscher C3: Ines Wagner
-        +-- Forscher C4: Jan Neumann
-        +-- Forscher C5: Katrin Hoffmann
-        +-- Forscher C6: Leon Zimmermann
-        +-- Forscher C7: Marie Krüger
-        +-- Forscher C8: Nico Schröder
+    +-- Pharmakologie (SC-T/PZ)
+    |   Teamleiterin pharmakologische Forschung: Dr. Petra Pharmon
+    |   +-- Biochemiker: Dr. Tobias Isomer
+    |   |   +-- Chemielaborant: Lukas Reagens
+    |   +-- Pharmakologe: Dr. Max Vitamer
+    |   |   +-- PTA: Julia Pulvermann
+    |
+    +-- Veterinär (SC-T/VZ)
+    |   Teamleiterin Veterinärforschung: Dr. Viktoria Petermann
+    |   +-- Veterinär: Dr. Leon Wiesler
+    |   +-- Wissenschaftlicher Mitarbeiter: Dr. Victor Forscher
+    |   +-- Tierpfleger: Jan Albrecht
+    |
+    +-- Sicherheit (SC-T/IS)
+    |   Teamleiter Sicherheit: Bernd Wachter
+    |   +-- Sicherheit: Erik Schildmann
+    |   +-- Sicherheit: Lars Wächter
+    |
+    +-- Verwaltung (SC-T/VT)
+        Teamleiter Verwaltung: Carsten Orlich
+        +-- Verwaltungsfachangestellte: Annika Metz-Schimmel
+        |   +-- IT: Ansgar Kode
+        +-- Hausmeister: Anton Kehrig
+        |   +-- Koch: Marcel Breuer
           `;
   },
 };
