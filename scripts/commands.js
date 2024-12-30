@@ -37,7 +37,7 @@ const commands = {
   },
   organigramm: function () {
     return `
-Organigramm der Forschungseinrichtung "Station Taxus"
+<span class="color2">Organigramm der Forschungseinrichtung "Station Taxus"</span>
     Stationsleitung: Dr. Helen Warden
     Stellv. Stationsleitung: Dr. Simon Verner
     |
@@ -171,7 +171,7 @@ Bemerkung:
     Hervorragender Teamplayer, übernimmt oft zusätzliche Aufgaben.
   `,
   julianZellmann: `
-Name: <span class="color1">Dr. Julian Zellmann</span>
+Name: <span class="color3">Dr. Julian Zellmann</span>
 Funktion:
     Arzt
 Bereich:
@@ -182,7 +182,7 @@ Bemerkung:
     Kommunikativ und beliebt bei Patienten, präziser Diagnostiker.
   `,
   robertSievers: `
-Name: <span class="color1">Dr. Robert Sievers</span>
+Name: <span class="color3">Dr. Robert Sievers</span>
 Funktion:
     Arzt
 Bereich:
@@ -193,7 +193,7 @@ Bemerkung:
     Regelmäßige Teilnahme an internationalen Kongressen, Fokus auf Präventionsmedizin.
   `,
   marionNestler: `
-Name: <span class="color1">Dr. Marion Nestler</span>
+Name: <span class="color4">Dr. Marion Nestler</span>
 Funktion:
     Pädiaterin
 Bereich:
@@ -204,7 +204,7 @@ Bemerkung:
     Kinderfreundlich, führt innovative Therapieansätze ein.
   `,
   franzLimbus: `
-Name: <span class="color1">Dr. Franz Limbus</span>
+Name: <span class="color3">Dr. Franz Limbus</span>
 Funktion:
     Pathologe
 Bereich:
@@ -215,7 +215,7 @@ Bemerkung:
     Veröffentlichte regelmäßig in Fachzeitschriften, bekannt für seine akribische Arbeit.
   `,
   simonNachtigall: `
-Name: <span class="color1">Simon Nachtigall</span>
+Name: <span class="color4">Simon Nachtigall</span>
 Funktion:
     Pflegefachmann
 Bereich:
@@ -226,7 +226,7 @@ Bemerkung:
     Besonders einfühlsam im Umgang mit Patienten, flexibel in der Einsatzplanung.
   `,
   konradSchirmer: `
-Name: <span class="color1">Dr. Konrad Schirmer</span>
+Name: <span class="color2">Dr. Konrad Schirmer</span>
 Funktion:
     Teamleiter medizinische Forschung
 Bereich:
@@ -237,7 +237,7 @@ Bemerkung:
     Spezialisiert auf seltene Erkrankungen, hohe Erfolgsquote in klinischen Studien.
   `,
   stefanKramme: `
-Name: <span class="color1">Dr. Stefan Kramme</span>
+Name: <span class="color2">Dr. Stefan Kramme</span>
 Funktion:
     Teamleiter Psychologie
 Bereich:
@@ -248,7 +248,7 @@ Bemerkung:
     Fördert die Weiterentwicklung seiner Mitarbeiter, interessiert an Neuropsychologie.
   `,
   torstenOberdorfer: `
-Name: <span class="color1">Dr. Torsten Oberdorfer</span>
+Name: <span class="color3">Dr. Torsten Oberdorfer</span>
 Funktion:
     Psychiater
 Bereich:
@@ -259,7 +259,7 @@ Bemerkung:
     Setzt moderne psychotherapeutische Methoden ein, hohe Patientenzufriedenheit.
   `,
   mariaRiedmann: `
-Name: <span class="color1">Maria Riedmann</span>
+Name: <span class="color4">Maria Riedmann</span>
 Funktion:
     Psychologische Psychotherapeutin
 Bereich:
@@ -270,7 +270,7 @@ Bemerkung:
     Engagiert in der Patientennachsorge, immer gut vorbereitet.
   `,
   tobiasIsomer: `
-Name: <span class="color1">Dr. Tobias Isomer</span>
+Name: <span class="color3">Dr. Tobias Isomer</span>
 Funktion:
     Biochemiker
 Bereich:
@@ -281,7 +281,7 @@ Bemerkung:
     Experte für Molekularbiologie, früher oft in internationalen Forschungskooperationen tätig.
   `,
   lukasReagens: `
-Name: <span class="color1">Lukas Reagens</span>
+Name: <span class="color4">Lukas Reagens</span>
 Funktion:
     Chemielaborant
 Bereich:
@@ -292,7 +292,7 @@ Bemerkung:
     Zeigt großes technisches Geschick, führt präzise Laborexperimente durch.
   `,
   maxVitamer: `
-Name: <span class="color1">Dr. Max Vitamer</span>
+Name: <span class="color3">Dr. Max Vitamer</span>
 Funktion:
     Pharmokologe
 Bereich:
@@ -303,7 +303,7 @@ Bemerkung:
     Fokus auf Medikamentensicherheit, arbeitet eng mit der Industrie zusammen.
   `,
   juliaPulvermann: `
-Name: <span class="color1">Julia Pulvermann</span>
+Name: <span class="color4">Julia Pulvermann</span>
 Funktion:
     PTA
 Bereich:
@@ -314,7 +314,7 @@ Bemerkung:
     Organisiert das Labor effizient, arbeitet strukturiert und sauber.
   `,
   petraPharmon: `
-Name: <span class="color1">Dr. Petra Pharmon</span>
+Name: <span class="color2">Dr. Petra Pharmon</span>
 Funktion:
     Teamleiterin pharmakologische Forschung
 Bereich:
@@ -325,7 +325,7 @@ Bemerkung:
     Leitet mehrere bahnbrechende Projekte, starke Führungspersönlichkeit.
   `,
   erikSchildmann: `
-Name: <span class="color1">Erik Schildmann</span>
+Name: <span class="color4">Erik Schildmann</span>
 Funktion:
     Sicherheit
 Bereich:
@@ -336,7 +336,7 @@ Bemerkung:
     Reagiert schnell und effektiv in Notfallsituationen, Teamplayer.
   `,
   larsWächter: `
-Name: <span class="color1">Lars Wächter</span>
+Name: <span class="color4">Lars Wächter</span>
 Funktion:
     Sicherheit
 Bereich:
@@ -347,7 +347,7 @@ Bemerkung:
     Technisch versiert, unterstützt auch IT-Projekte.
   `,
   berndWachter: `
-Name: <span class="color1">Bernd Wachter</span>
+Name: <span class="color2">Bernd Wachter</span>
 Funktion:
     Teamleiter Sicherheit
 Bereich:
@@ -358,7 +358,7 @@ Bemerkung:
     Hat umfangreiche Erfahrungen in der Sicherheitsplanung, gut im Krisenmanagement.
   `,
   antonKehrig: `
-Name: <span class="color1">Anton Kehrig</span>
+Name: <span class="color4">Anton Kehrig</span>
 Funktion:
     Hausmeister
 Bereich:
@@ -369,7 +369,7 @@ Bemerkung:
     Hilfsbereit und zuverlässig, handwerklich geschickt.
   `,
   ansgarKode: `
-Name: <span class="color1">Ansgar Kode</span>
+Name: <span class="color4">Ansgar Kode</span>
 Funktion:
     IT
 Bereich:
@@ -380,7 +380,7 @@ Bemerkung:
     Programmiert interne Tools, schnell bei Problemlösungen.
   `,
   marcelBreuer: `
-Name: <span class="color1">Marcel Breuer</span>
+Name: <span class="color4">Marcel Breuer</span>
 Funktion:
     Koch
 Bereich:
@@ -391,7 +391,7 @@ Bemerkung:
     Kreativ in der Menügestaltung, sorgt für ausgewogene Mahlzeiten.
   `,
   carstenOrlich: `
-Name: <span class="color1">Carsten Orlich</span>
+Name: <span class="color2">Carsten Orlich</span>
 Funktion:
     Teamleiter Verwaltung
 Bereich:
@@ -402,7 +402,7 @@ Bemerkung:
     Strukturierte Arbeitsweise, optimiert regelmäßig interne Prozesse.
   `,
   annikaMetzSchimmel: `
-Name: <span class="color1">Annika Metz-Schimmel</span>
+Name: <span class="color4">Annika Metz-Schimmel</span>
 Funktion:
     Verwaltungsfachangestellte
 Bereich:
@@ -413,7 +413,7 @@ Bemerkung:
     Schnell und präzise in der Bearbeitung von Anfragen, sorgt für reibungslose Abläufe.
   `,
   viktoriaPetermann: `
-Name: <span class="color1">Dr. Viktoria Petermann</span>
+Name: <span class="color2">Dr. Viktoria Petermann</span>
 Funktion:
     Teamleiterin Veterinärforschung
 Bereich:
@@ -424,7 +424,7 @@ Bemerkung:
     Schwerpunkt auf Zoonosen-Forschung, engagiert in der Öffentlichkeitsarbeit.
   `,
   leonWiesler: `
-Name: <span class="color1">Dr. Leon Wiesler</span>
+Name: <span class="color3">Dr. Leon Wiesler</span>
 Funktion:
     Veterinär
 Bereich:
@@ -435,7 +435,7 @@ Bemerkung:
     Spezialist für exotische Tierarten, leitet regelmäßig interne Workshops.
   `,
   janAlbrecht: `
-Name: <span class="color1">Jan Albrecht</span>
+Name: <span class="color4">Jan Albrecht</span>
 Funktion:
     Tierpfleger
 Bereich:
@@ -446,7 +446,7 @@ Bemerkung:
     Zuverlässig in der Tierpflege, findet schnell Zugang zu Tieren.
   `,
   victorForscher: `
-Name: <span class="color1">Dr. Victor Forscher</span>
+Name: <span class="color3">Dr. Victor Forscher</span>
 Funktion:
     Wissenschaftlicher Mitarbeiter
 Bereich:
@@ -457,7 +457,7 @@ Bemerkung:
     Publizierte bahnbrechende Studien, unterstützte Nachwuchsforscher.
   `,
   defaultUser: `
-Name: <span class="color1">user@Taxus.net</span>
+Name: user@Taxus.net
 Funktion:
     DefaultUser
 Bereich:
