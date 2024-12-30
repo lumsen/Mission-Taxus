@@ -118,6 +118,15 @@
           } else {
             response = `Befehl nicht gefunden: ${command}`;
           }
+		  
+		 if (args[0] === "personal" && args.length > 1) {
+            const personalList = args.slice(1).join(" ");
+            response = personal[personalName] || `Mitarbeitende/r nicht gefunden: ${personalName}`;
+          } else if (commands[args[0]]) {
+            response = commands[args[0]]();
+          } else {
+            response = `Befehl nicht gefunden: ${command}`;
+          }
 
           if (response) {
             const responseElement = document.createElement("p");
