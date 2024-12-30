@@ -28,7 +28,7 @@ const commands = {
     return `Verfügbare Projekte: ${projectList}`;
   },
   contact: function () {
-    return "Kontakt: email@example.com";
+    return "Kontakt: email.SC-T@cmr.com";
   },
 	personal: function () {
     const personalList = Object.keys(personal)
