@@ -5,8 +5,8 @@ const commandDescriptions = {
   about: "Zeigt Informationen über diese simulierte Terminal-Seite an.",
   projects: 'Zeigt die verfügbaren Projekte an, außer Projekten, die mit "x" beginnen.',
   contact: "Zeigt Kontaktinformationen an.",
-  organigramm: 'Zeigt das Organigramm der Forschungseinrichtung "Station Taxus" an.',
-  };
+  organigram: 'Zeigt das Organigram der Forschungseinrichtung "Station Taxus" an.',
+};
 
 // Funktionalität der Befehle
 const commands = {
@@ -28,51 +28,32 @@ const commands = {
     return `Verfügbare Projekte: ${projectList}`;
   },
   contact: function () {
-    return "Kontakt: email.SC-T@cmr.com";
+    return "Kontakt: email@example.com";
   },
-  organigramm: function () {
+  organigram: function () {
     return `
-Organigramm der Forschungseinrichtung "Station Taxus"
-    Stationsleitung: Dr. Helen Warden
-    Stellv. Stationsleitung: Dr. Simon Verner
+Organigram der Forschungseinrichtung "Station Taxus"
+    Direktor: Dr. Sarah Schmidt
     |
-    +-- Medizin (SC-T/MZ)
-    |   Teamleiter medizinische Forschung: Dr. Konrad Schirmer
-    |   +-- Arzt: Dr. Julian Zellmann
-    |   |   +-- Arzt: Dr. Robert Sievers
-    |   |   +-- Pädiaterin: Dr. Marion Nestler
-    |   +-- Pathologe: Dr. Franz Limbus
-    |   |   +-- Pflegefachmann: Simon Nachtigall
+    +-- Leiter A: Max Mustermann
+    |   +-- Forscher A1: Anna Müller
+    |   +-- Forscher A2: Bernd Schmitz
+    |   +-- Forscher A3: Claudia Klein
     |
-    +-- Medizin-Psychologie (SC-T/MPZ)
-    |   Teamleiter Psychologie: Dr. Stefan Kramme
-    |   +-- Psychiater: Dr. Torsten Oberdorfer
-    |   +-- Psychologische Psychotherapeutin: Maria Riedmann
+    +-- Leiter B: Erika Musterfrau
+    |   +-- Forscher B1: Daniel Braun
+    |   +-- Forscher B2: Eva Fischer
+    |   +-- Forscher B3: Frank Meier
     |
-    +-- Pharmakologie (SC-T/PZ)
-    |   Teamleiterin pharmakologische Forschung: Dr. Petra Pharmon
-    |   +-- Biochemiker: Dr. Tobias Isomer
-    |   |   +-- Chemielaborant: Lukas Reagens
-    |   +-- Pharmakologe: Dr. Max Vitamer
-    |   |   +-- PTA: Julia Pulvermann
-    |
-    +-- Veterinär (SC-T/VZ)
-    |   Teamleiterin Veterinärforschung: Dr. Viktoria Petermann
-    |   +-- Veterinär: Dr. Leon Wiesler
-    |   +-- Wissenschaftlicher Mitarbeiter: Dr. Victor Forscher
-    |   +-- Tierpfleger: Jan Albrecht
-    |
-    +-- Sicherheit (SC-T/IS)
-    |   Teamleiter Sicherheit: Bernd Wachter
-    |   +-- Sicherheit: Erik Schildmann
-    |   +-- Sicherheit: Lars Wächter
-    |
-    +-- Verwaltung (SC-T/VT)
-        Teamleiter Verwaltung: Carsten Orlich
-        +-- Verwaltungsfachangestellte: Annika Metz-Schimmel
-        |   +-- IT: Ansgar Kode
-        +-- Hausmeister: Anton Kehrig
-        |   +-- Koch: Marcel Breuer
+    +-- Leiter C: John Doe
+        +-- Forscher C1: Gina Schulz
+        +-- Forscher C2: Hans Becker
+        +-- Forscher C3: Ines Wagner
+        +-- Forscher C4: Jan Neumann
+        +-- Forscher C5: Katrin Hoffmann
+        +-- Forscher C6: Leon Zimmermann
+        +-- Forscher C7: Marie Krüger
+        +-- Forscher C8: Nico Schröder
           `;
   },
 };
@@ -138,9 +119,6 @@ Status: In Bearbeitung
 Verantwortlicher: Dr. Xavier Charles 
   `,
 };
-
-
-
 
 /**
  * Anleitung zum Hinzufügen eines neuen Befehls:
