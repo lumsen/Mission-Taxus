@@ -106,44 +106,42 @@
         }
 
         // Execute command and display output
-        function executeCommand(command) {
-          const args = command.split(" ");
-          let response;
+		function executeCommand(command) {
+    const args = command.split(" ");
+    let response;
 
-          if (args[0] === "projects" && args.length > 1) {
-            const projectName = args.slice(1).join(" ");
-            response = projects[projectName] || `Projekt nicht gefunden: ${projectName}`;
-          } else if (commands[args[0]]) {
-            response = commands[args[0]]();
-          } else {
-            response = `Befehl nicht gefunden: ${command}`;
-          }
-		  
-		 if (args[0] === "personal" && args.length > 1) {
-            const personalName = args.slice(1).join(" ");
-            response = personal[personalName] || `Mitarbeitende/r nicht gefunden: ${personalName}`;
-          } else if (commands[args[0]]) {
-            response = commands[args[0]]();
-          } else {
-            response = `Befehl nicht gefunden: ${command}`;
-          }
+    if (args[0] === "projects" && args.length > 1) {
+        const projectName = args.slice(1).join(" ");
+        response = projects[projectName] || `Projekt nicht gefunden: ${projectName}`;
+    } else if (args[0] === "personnel" && args.length > 1) {
+        const personnelName = args.slice(1).join(" ");
+        response = personnel[personnelName] || `Mitarbeitende/r nicht gefunden: ${personnelName}`;
+    } else if (commands[args[0]]) {
+        response = commands[args[0]]();
+    } else {
+        response = `Befehl nicht gefunden: ${command}`;
+    }
 
-          if (response) {
-            const responseElement = document.createElement("p");
-            responseElement.className = "output";
-            responseElement.innerHTML = response.replace(/\n/g, "<br>");
-            output.appendChild(responseElement);
-            redactWords(responseElement, "xrayAnalysis,Dr. Sarah Schmidt,Fehlermeldung"); // Replace "word1,word2" with your comma-separated list
-          }
+    if (response) {
+        const responseElement = document.createElement("p");
+        responseElement.className = "output";
+        responseElement.innerHTML = response.replace(/\n/g, "<br>");
+        output.appendChild(responseElement);
 
-          if (args[0] !== "clear") {
-            const inputElement = document.createElement("p");
-            inputElement.className = "output user-input";
-            inputElement.textContent = `user@TAXUS.net> ${command}`;
-            output.appendChild(inputElement);
-          }
-          output.scrollTop = output.scrollHeight;
-        }
+        redactWords(responseElement, "xrayAnalysis,Dr. Sarah Schmidt,Fehlermeldung"); // Worte ersetzen
+    }
+
+    if (args[0] !== "clear") {
+        const inputElement = document.createElement("p");
+        inputElement.className = "output user-input";
+        inputElement.textContent = `user@TAXUS.net> ${command}`;
+        output.appendChild(inputElement);
+    }
+    output.scrollTop = output.scrollHeight;
+}
+
+		
+		
 
         // Autocomplete function for command suggestions
         function autocomplete(input) {
