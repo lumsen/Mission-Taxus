@@ -30,10 +30,10 @@ const commands = {
   contact: function () {
     return "Kontakt: email.SC-T@cmr.com";
   },
-	personal: function () {
-    const personalList = Object.keys(personal)
+	personnel: function () {
+    const personnelList = Object.keys(personnel)
       .join(", ");
-    return `Liste der Mitarbeitenden: ${personalList}`;
+    return `Liste der Mitarbeitenden: ${personnelList}`;
   },
   organigramm: function () {
     return `
@@ -79,7 +79,7 @@ const commands = {
         +-- Hausmeister: Anton Kehrig
         |   +-- Koch: Marcel Breuer
 		
-Aufrufen der einzelnen Mitarbeitenden nach dem Schema: personal vornameNachname
+Aufrufen der einzelnen Mitarbeitenden nach dem Schema: personnel vornameNachname
           `;
   },
 };
@@ -146,8 +146,8 @@ Verantwortlicher: Dr. Xavier Charles
   `,
 };
 
-// Personalliste
-const personal = {
+// Mitarbeitendenliste
+const personnel = {
   heleneWarden: `
 Name: <span class="color1">Dr. Helene Warden</span>
 Funktion:
