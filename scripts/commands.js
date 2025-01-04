@@ -30,9 +30,9 @@ const commands = {
   contact: function () {
     return "Kontakt: email.SC-T@cmr.com";
   },
-	personnel: function () {
+	userData: function () {
     const personnelList = Object.keys(personnel)
-      .join(", ");
+      .join(", \n ");
     return `Liste der Mitarbeitenden: ${personnelList}`;
   },
   organigramm: function () {
@@ -81,6 +81,43 @@ const commands = {
 		
 Aufrufen der einzelnen Mitarbeitenden nach dem Schema: personnel vornameNachname
           `;
+  },
+  unlock: function () {
+    const popup = document.createElement("div");
+    popup.id = "unlock-popup";
+    popup.innerHTML = `
+      <div class="popup-content">
+        <p>Bitte geben Sie den 28-stelligen Code zum Entsperren des LockDowns ein:</p>
+        <input type="text" id="unlock-code" maxlength="28" />
+        <button id="unlock-submit">Submit</button>
+        <button id="unlock-cancel">Cancel</button>
+      </div>
+    `;
+    document.body.appendChild(popup);
+
+    document.getElementById("unlock-submit").addEventListener("click", function () {
+      const code = document.getElementById("unlock-code").value;
+      if (code.length === 28) {
+        alert("Code akzeptiert. LockDown wird entsperrt.");
+        document.body.removeChild(popup);
+      } else {
+        alert("Ungültiger Code. Bitte versuchen Sie es erneut.");
+      }
+    });
+
+    document.getElementById("unlock-cancel").addEventListener("click", function () {
+      document.body.removeChild(popup);
+    });
+
+    document.getElementById("unlock-code").addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        document.getElementById("unlock-submit").click();
+      }
+    });
+
+    // Enable pointer events for the popup
+    popup.style.pointerEvents = "auto";
+    document.getElementById("unlock-code").focus();
   },
 };
 
@@ -364,7 +401,7 @@ Funktion:
 Bereich:
     VT
 Personalnummer: 006793
-Letzter Login: - Fehlermeldung -
+Letzter Login: - DATENSPEICHER BESCHÄDIGT -
 Bemerkung: 
     Hilfsbereit und zuverlässig, handwerklich geschickt.
   `,
@@ -463,10 +500,20 @@ Funktion:
 Bereich:
     VT
 Personalnummer: 000001
-Letzter Login: - DATENSPECHER BESCHÄDIGT -
+Letzter Login: - Fehlermeldung -
 Bemerkung: 
     DefaultUser
   `,
+  SYSTEM: `
+  Name: <span class="color3">SYSTEM</span>
+  Funktion:
+      Systembenuzter
+  Bereich:
+      SYSTEM
+  Personalnummer: 000000
+  Letzter Login: -
+  Bemerkung: 
+  `
 };
 
 

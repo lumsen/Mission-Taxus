@@ -128,7 +128,7 @@
         responseElement.innerHTML = response.replace(/\n/g, "<br>");
         output.appendChild(responseElement);
 
-        redactWords(responseElement, "xrayAnalysis,Dr. Sarah Schmidt,- DATENSPECHER BESCHÄDIGT -"); // Worte ersetzen
+        redactWords(responseElement, "xrayAnalysis,Dr. Sarah Schmidt,DATENSPEICHER BESCHÄDIGT"); // Worte ersetzen
     }
 
     if (args[0] !== "clear") {
