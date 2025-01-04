@@ -463,7 +463,7 @@ Funktion:
 Bereich:
     VT
 Personalnummer: 000001
-Letzter Login: - Fehlermeldung -
+Letzter Login: - DATENSPECHER BESCHÄDIGT -
 Bemerkung: 
     DefaultUser
   `,
