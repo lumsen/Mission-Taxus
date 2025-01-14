@@ -5,4 +5,4 @@ This project simulates a terminal interface for the research facility "Station T
 ## GitHub Pages
 
 You can access the GitHub Pages site for this project at:
-https://vanadiumoxid.github.io/Mission-Taxus/
+https://lumsen.github.io/Mission-Taxus/
