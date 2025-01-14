@@ -1,18 +1,63 @@
-// Beschreibungstexte für die Befehle
+const CONSTANTS = {
+  MAX_ATTEMPTS: 4,
+  COUNTDOWN_TIME: 5,
+  CODE_LENGTH: 28,
+  STORAGE_KEY: 'unlockAttempts',
+  MESSAGE_TYPES: {
+    ERROR: 'error',
+    SUCCESS: 'success'
+  },
+  ERROR_MESSAGES: {
+    MAX_ATTEMPTS: 'Maximale Anzahl an Versuchen erreicht. Die Codeeingabe ist nicht mehr möglich. Bitte folgen Sie dem Resetprotokoll gemäß Anweisung TAX:0815:001.',
+    INVALID_CODE: 'Ungültiger Code. Bitte versuchen Sie es erneut.',
+    CODE_ACCEPTED: 'Code akzeptiert. LockDown wird entsperrt.'
+  },
+  STORAGE_KEYS: {
+    ATTEMPTS: 'unlockAttempts',
+    MARKED_CHARS: 'originalMarkedChars'
+  }
+};
+
 const commandDescriptions = {
   clear: 'Löscht das Terminalfenster.',
   help: 'Zeigt die Liste der verfügbaren Befehle an.',
   about: 'Zeigt Informationen über diese simulierte Terminal-Seite an.',
-  projects:
-    'Zeigt die verfügbaren Projekte an, außer Projekten, die mit "x" beginnen.',
+  projects: 'Zeigt die verfügbaren Projekte an, außer Projekten, die mit "x" beginnen.',
   contact: 'Zeigt Kontaktinformationen an.',
-  organigramm:
-    'Zeigt das Organigramm der Forschungseinrichtung "Station Taxus" an.'
+  organigramm: 'Zeigt das Organigramm der Forschungseinrichtung "Station Taxus" an.'
 }
 
-const MAX_ATTEMPTS = 4
+const messageQueue = [];
+let messageDisplaying = false;
 
-// Funktionalität der Befehle
+function showMessage(type, message, timeout = 5000) {
+  const messageData = { type, message, timeout };
+  messageQueue.push(messageData);
+  if (!messageDisplaying) {
+    displayNextMessage();
+  }
+}
+
+function displayNextMessage() {
+  if (messageQueue.length === 0) {
+    messageDisplaying = false;
+    return;
+  }
+
+  messageDisplaying = true;
+  const { type, message, timeout } = messageQueue.shift();
+  
+  const messageElement = document.createElement('div');
+  messageElement.className = `popup-message ${type}`;
+  messageElement.innerHTML = `<p>${message}</p>`;
+  document.body.appendChild(messageElement);
+
+  setTimeout(() => {
+    document.body.removeChild(messageElement);
+    displayNextMessage();
+  }, timeout);
+}
+
 const commands = {
   clear: function () {
     output.innerHTML = ''
@@ -84,97 +129,62 @@ Aufrufen der einzelnen Mitarbeitenden nach dem Schema: personnel vornameNachname
           `
   },
   unlock: function () {
-    let attempts = parseInt(localStorage.getItem('unlockAttempts')) || 0
-
-    if (attempts >= MAX_ATTEMPTS) {
-      const maxAttemptsMessage = document.createElement('div')
-      maxAttemptsMessage.className = 'popup-message error'
-      maxAttemptsMessage.innerHTML = `<p>Maximale Anzahl an Versuchen erreicht. Die Codeeingabe ist nicht mehr möglich. Bitte folgen Sie dem Resetprotokoll gemäß Anweisung TAX:0815:001.</p>`
-      document.body.appendChild(maxAttemptsMessage)
-      setTimeout(() => {
-        document.body.removeChild(maxAttemptsMessage)
-      }, 5000)
-      return
+    let attempts = 0;
+    try {
+      attempts = parseInt(localStorage.getItem(CONSTANTS.STORAGE_KEYS.ATTEMPTS)) || 0;
+    } catch (e) {
+      console.error('LocalStorage error:', e);
     }
 
-    const popup = document.createElement('div')
-    popup.id = 'unlock-popup'
+    if (attempts >= CONSTANTS.MAX_ATTEMPTS) {
+      showMessage(CONSTANTS.MESSAGE_TYPES.ERROR, CONSTANTS.ERROR_MESSAGES.MAX_ATTEMPTS);
+      return;
+    }
+
+    const storedChars = localStorage.getItem(CONSTANTS.STORAGE_KEYS.MARKED_CHARS);
+    if (!storedChars) {
+      showMessage(CONSTANTS.MESSAGE_TYPES.ERROR, 'Keine gespeicherten Zeichen gefunden.');
+      return;
+    }
+
+    const popup = document.createElement('div');
+    popup.id = 'unlock-popup';
     popup.innerHTML = `
       <div class="popup-content">
-        <p>Bitte geben Sie den 28-stelligen Code zum Entsperren des LockDowns ein:</p>
-        <input type="text" id="unlock-code" maxlength="28" />
+        <p>Bitte geben Sie den ${CONSTANTS.CODE_LENGTH}-stelligen Code zum Entsperren des LockDowns ein:</p>
+        <input type="text" id="unlock-code" maxlength="${CONSTANTS.CODE_LENGTH}" />
         <button id="unlock-submit">Submit</button>
         <button id="unlock-cancel">Cancel</button>
       </div>
-    `
-    document.body.appendChild(popup)
+    `;
 
-    document
-      .getElementById('unlock-submit')
-      .addEventListener('click', function () {
-        const code = document.getElementById('unlock-code').value
-        if (code.length === 28) {
-          const successMessage = document.createElement('div')
-          successMessage.className = 'popup-message'
-          successMessage.innerHTML =
-            '<p>Code akzeptiert. LockDown wird entsperrt.</p>'
-          document.body.appendChild(successMessage)
-          setTimeout(() => {
-            document.body.removeChild(successMessage)
-          }, 3000)
-          document.body.removeChild(popup)
-          localStorage.removeItem('unlockAttempts')
-        } else {
-          attempts++
-          localStorage.setItem('unlockAttempts', attempts)
-          const errorMessage = document.createElement('div')
-          errorMessage.className = 'popup-message error'
-          let countdown = 5
-          if (attempts >= MAX_ATTEMPTS) {
-            errorMessage.innerHTML = `<p>Maximale Anzahl an Versuchen erreicht. Die Codeeingabe ist nicht mehr möglich. Bitte folgen Sie dem Resetprotokoll gemäß Anweisung TAX:0815:001.</p>`
-          } else {
-            errorMessage.innerHTML = `<p>Ungültiger Code. Bitte versuchen Sie es erneut.</p><p>Versuche: ${attempts}/${MAX_ATTEMPTS}</p><p>Schließt in ${countdown} Sekunden...</p>`
-          }
-          document.body.appendChild(errorMessage)
+    const cleanup = () => document.body.removeChild(popup);
+    
+    const handleSubmit = () => {
+      const code = document.getElementById('unlock-code').value;
+      if (code === storedChars) {
+        showMessage(CONSTANTS.MESSAGE_TYPES.SUCCESS, CONSTANTS.ERROR_MESSAGES.CODE_ACCEPTED);
+        cleanup();
+        localStorage.removeItem(CONSTANTS.STORAGE_KEYS.ATTEMPTS);
+      } else {
+        attempts++;
+        localStorage.setItem(CONSTANTS.STORAGE_KEYS.ATTEMPTS, attempts);
+        handleInvalidCode(attempts, cleanup);
+      }
+    };
 
-          const interval = setInterval(() => {
-            countdown--
-            if (countdown > 0) {
-              if (attempts < MAX_ATTEMPTS) {
-                errorMessage.innerHTML = `<p>Ungültiger Code. Bitte versuchen Sie es erneut.</p><p>Versuche: ${attempts}/${MAX_ATTEMPTS}</p><p>Schließt in ${countdown} Sekunden...</p>`
-              }
-            } else {
-              clearInterval(interval)
-              document.body.removeChild(errorMessage)
-              if (attempts >= MAX_ATTEMPTS) {
-                document.body.removeChild(popup)
-              }
-            }
-          }, 1000)
-        }
-      })
-
-    document
-      .getElementById('unlock-cancel')
-      .addEventListener('click', function () {
-        document.body.removeChild(popup)
-      })
-
-    document
-      .getElementById('unlock-code')
-      .addEventListener('keydown', function (event) {
-        if (event.key === 'Enter') {
-          document.getElementById('unlock-submit').click()
-        }
-      })
-
-    // Enable pointer events for the popup
-    popup.style.pointerEvents = 'auto'
-    document.getElementById('unlock-code').focus()
+    document.body.appendChild(popup);
+    const unlockInput = document.getElementById('unlock-code');
+    
+    document.getElementById('unlock-submit').addEventListener('click', handleSubmit);
+    document.getElementById('unlock-cancel').addEventListener('click', cleanup);
+    unlockInput.addEventListener('keydown', e => e.key === 'Enter' && handleSubmit());
+    
+    popup.style.pointerEvents = 'auto';
+    unlockInput.focus();
   }
 }
 
-// Projektdefinitionen
 const projects = {
   gasPipeline: `
 Projektname: <span class="color1">Gas Pipeline Expansion</span>
@@ -236,7 +246,6 @@ Verantwortlicher: Dr. Xavier Charles
   `
 }
 
-// Mitarbeitendenliste
 const personnel = {
   heleneWarden: `
 Name: <span class="color1">Dr. Helene Warden</span>
@@ -459,7 +468,7 @@ Bemerkung:
     Hilfsbereit und zuverlässig, handwerklich geschickt.
   `,
   ansgarKode: `
-Name: <span class="color4">Ansgar Kode</span>
+Name: <span="color4">Ansgar Kode</span>
 Funktion:
     IT
 Bereich:
@@ -568,20 +577,3 @@ Bemerkung:
   Bemerkung: 
   `
 }
-
-/**
- * Anleitung zum Hinzufügen eines neuen Befehls:
- *
- * 1. Fügen Sie eine neue Beschreibung zum `commandDescriptions` Objekt hinzu:
- *    Beispiel:
- *    commandDescriptions.neuerBefehl = "Beschreibung des neuen Befehls.";
- *
- * 2. Fügen Sie eine neue Funktion zum `commands` Objekt hinzu:
- *    Beispiel:
- *    commands.neuerBefehl = function() {
- *      // Implementierung des neuen Befehls
- *      return "Ausgabe des neuen Befehls";
- *    };
- *
- * 3. Speichern Sie die Datei und laden Sie die Webseite neu, um den neuen Befehl zu testen.
- */

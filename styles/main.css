@@ -1,24 +1,36 @@
+:root {
+  --bg-color: #2e2e2e;
+  --text-color: #00ff00;
+  --text-color-dim: #208d20;
+  --font-family: "Courier New", Courier, "Lucida Console", monospace;
+  /* Add color variables for consistency */
+  --color1: #ff4500;
+  --color2: #1e90ff;
+  --color3: #32cd32;
+  --color4: #9400d3;
+}
+
 /* Styling for the body */
 body {
-  background-color: #2e2e2e; /* Anthrazit */
-  color: #00ff00; /* Terminalgrün */
-  font-family: "Courier New", Courier, "Lucida Console", monospace; /* Typische Terminalschrift */
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: var(--font-family);
   margin: 0;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  pointer-events: none; /* Disable all pointer events */
+  pointer-events: none;
 }
 
 /* Styling for the terminal */
 #terminal {
-  background-color: #2e2e2e; /* Anthrazit */
-  color: #00ff00; /* Terminalgrün */
+  background-color: var(--bg-color);
+  color: var(--text-color);
   width: 80%;
   height: 70%;
   padding: 20px;
-  border: 1px solid #00ff00;
+  border: 1px solid var(--text-color);
   overflow-y: auto;
   white-space: pre-wrap;
   position: relative;
@@ -51,7 +63,7 @@ body {
   position: absolute;
   color: red;
   opacity: 0.5;
-  font-family: "Courier New", Courier, "Lucida Console", monospace;
+  font-family: var(--font-family);
   white-space: pre;
   pointer-events: none;
   z-index: 0;
@@ -62,7 +74,7 @@ body {
   z-index: 1;
   overflow-y: auto;
   flex-grow: 1;
-  pointer-events: auto; /* Re-enable pointer events for specific elements */
+  pointer-events: auto;
 }
 
 #output::-webkit-scrollbar {
@@ -76,12 +88,12 @@ body {
   align-items: center;
   z-index: 1;
   width: 100%;
-  color: #208d20; /* Slightly different shade of green */
-  pointer-events: auto; /* Re-enable pointer events for specific elements */
-  border: none; /* Remove border */
-  padding: 0; /* Remove padding */
-  border-radius: 0; /* Remove border radius */
-  box-shadow: 0 0 1px #00cc00; /* Even more subtle shadow to indicate input field */
+  color: var(--text-color-dim);
+  pointer-events: auto;
+  border: none;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: 0 0 1px var(--text-color);
 }
 
 /* Styling for prompt */
@@ -93,17 +105,17 @@ body {
 #input-line {
   background: none;
   border: none;
-  color: #00cc00; /* Slightly different shade of green */
-  font-family: "Courier New", Courier, "Lucida Console", monospace;
+  color: var(--text-color);
+  font-family: var(--font-family);
   font-size: 1em;
   width: 100%;
   outline: none;
-  pointer-events: auto; /* Re-enable pointer events for specific elements */
+  pointer-events: auto;
 }
 
 /* Styling for user input in displayed output */
 .output.user-input {
-  color: #208d20; /* Slightly different shade of green */
+  color: var(--text-color-dim);
 }
 
 /* Styling for output lines */
@@ -114,36 +126,33 @@ body {
 /* Styling for cursor */
 .cursor {
   display: inline-block;
-  background-color: #00ff00;
+  background-color: var(--text-color);
   margin-left: 2px;
   animation: blink 1s steps(2, start) infinite;
 }
 
 /* Blink animation for cursor */
 @keyframes blink {
-  0% {
+  0%, 100% {
     opacity: 1;
   }
   50% {
     opacity: 0;
   }
-  100% {
-    opacity: 1;
-  }
 }
 
 /* Color classes */
 .color1 {
-  color: #ff4500;
+  color: var(--color1);
 }
 .color2 {
-  color: #1e90ff;
+  color: var(--color2);
 }
 .color3 {
-  color: #32cd32;
+  color: var(--color3);
 }
 .color4 {
-  color: #9400d3;
+  color: var(--color4);
 }
 
 /* Adjustments for mobile devices */
@@ -169,7 +178,7 @@ body {
   font-size: inherit;
   animation: cray 6s infinite steps(50);
   display: inline-block;
-  line-height: 1; /* Ensure line height remains constant */
+  line-height: 1;
 }
 
 @keyframes cray {
@@ -178,49 +187,49 @@ body {
     font-style: normal;
     text-decoration: none;
     text-transform: none;
-    color: #00ff00;
+    color: var(--text-color);
   }
   2%, 16%, 30%, 44%, 58%, 72%, 86% {
     font-weight: 200;
     font-style: italic;
     text-decoration: none;
     text-transform: none;
-    color: #ff4500;
+    color: var(--color1);
   }
   4%, 18%, 32%, 46%, 60%, 74%, 88% {
     font-weight: 300;
     font-style: normal;
     text-decoration: line-through;
     text-transform: uppercase;
-    color: #1e90ff;
+    color: var(--color2);
   }
   6%, 20%, 34%, 48%, 62%, 76%, 90% {
     font-weight: 400;
     font-style: normal;
     text-decoration: underline;
     text-transform: lowercase;
-    color: #32cd32;
+    color: var(--color3);
   }
   8%, 22%, 36%, 50%, 64%, 78%, 92% {
     font-weight: 500;
     font-style: normal;
     text-decoration: none;
     text-transform: capitalize;
-    color: #9400d3;
+    color: var(--color4);
   }
   10%, 24%, 38%, 52%, 66%, 80%, 94% {
     font-weight: 600;
     font-style: normal;
     text-decoration: none;
     text-transform: none;
-    color: #ff4500;
+    color: var(--color1);
   }
   12%, 26%, 40%, 54%, 68%, 82%, 96% {
     font-weight: 700;
     font-style: normal;
     text-decoration: none;
     text-transform: none;
-    color: #1e90ff;
+    color: var(--color2);
   }
 }
 
@@ -230,12 +239,12 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #2e2e2e;
-  color: #00ff00;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   padding: 20px;
-  border: 1px solid #00ff00;
+  border: 1px solid var(--text-color);
   z-index: 1000;
-  pointer-events: auto; /* Enable pointer events */
+  pointer-events: auto;
 }
 
 .popup-content {
@@ -248,18 +257,18 @@ body {
   margin-top: 10px;
   margin-bottom: 10px;
   padding: 5px;
-  font-family: "Courier New", Courier, "Lucida Console", monospace;
-  color: #00ff00;
-  background-color: #2e2e2e;
-  border: 1px solid #00ff00;
+  font-family: var(--font-family);
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  border: 1px solid var(--text-color);
 }
 
 #unlock-submit, #unlock-cancel {
   padding: 5px 10px;
-  font-family: "Courier New", Courier, "Lucida Console", monospace;
-  color: #00ff00;
-  background-color: #2e2e2e;
-  border: 1px solid #00ff00;
+  font-family: var(--font-family);
+  color: var(--text-color);
+  background-color: var(--bg-color);
+  border: 1px solid var(--text-color);
   cursor: pointer;
 }
 
@@ -268,14 +277,14 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: #2e2e2e;
-  color: #00ff00;
+  background-color: var(--bg-color);
+  color: var(--text-color);
   padding: 20px;
-  border: 1px solid #00ff00;
+  border: 1px solid var(--text-color);
   z-index: 1001;
   pointer-events: none;
   text-align: center;
-  font-family: "Courier New", Courier, "Lucida Console", monospace;
+  font-family: var(--font-family);
 }
 
 .popup-message.error {

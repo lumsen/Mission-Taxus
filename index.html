@@ -3,21 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';"
+    />
     <title>Intranet TAXUS</title>
     <link rel="stylesheet" href="styles/main.css" />
-    <link
-      rel="stylesheet"
-      href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
-    />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
   </head>
   <body>
     <div id="terminal">
       <div id="ascii-art-container">
-        <pre id="ascii-art">
-          <!-- ...existing code... -->
-        </pre>
+        <pre id="ascii-art"></pre>
       </div>
       <div id="output"></div>
       <div id="input-container">
@@ -33,10 +29,8 @@
         const cursor = document.querySelector('.cursor')
         const output = document.getElementById('output')
 
-        // Ensure output is accessible in commands.js
         window.output = output
 
-        // Command and Project List for Autocomplete
         const commandList = Object.keys(commandDescriptions).concat(
           Object.keys(projects)
             .filter(proj => !proj.startsWith('x'))
@@ -46,7 +40,6 @@
         let commandHistory = []
         let historyIndex = -1
 
-        // Function to set cursor position at the end
         function setCursorToEnd(element) {
           setTimeout(() => {
             element.setSelectionRange(
@@ -56,7 +49,6 @@
           }, 0)
         }
 
-        // Function to replace words with random characters and change color of each character individually
         function redactWords(element, words) {
           const wordList = words.split(',')
           wordList.forEach(word => {
@@ -77,24 +69,21 @@
                 )
                 spans.forEach((span, index) => {
                   setTimeout(() => {
-                    setTimeout(() => {
-                      const randomChar = String.fromCharCode(
-                        33 + Math.floor(Math.random() * 94)
-                      ) // Random character from '!' to '~'
-                      const randomColor = `#${Math.floor(
-                        Math.random() * 16777215
-                      ).toString(16)}` // Random color
-                      span.style.color = randomColor
-                      span.textContent = randomChar
-                    }, index * (Math.random() * 50 + 50)) // Delay between 50-100ms for each character change
-                  }, Math.random() * 100 + 500) // Initial delay between 50-150ms
+                    const randomChar = String.fromCharCode(
+                      33 + Math.floor(Math.random() * 94)
+                    )
+                    const randomColor = `#${Math.floor(
+                      Math.random() * 16777215
+                    ).toString(16)}`
+                    span.style.color = randomColor
+                    span.textContent = randomChar
+                  }, index * (Math.random() * 50 + 50) + Math.random() * 100 + 500)
                 })
               })
             }
           })
         }
 
-        // Execute command and display output
         function executeCommand(command) {
           const args = command.split(' ')
           let response
@@ -123,7 +112,7 @@
             redactWords(
               responseElement,
               'xrayAnalysis,Dr. Sarah Schmidt,DATENSPEICHER BESCHÄDIGT'
-            ) // Worte ersetzen
+            )
           }
 
           if (args[0] !== 'clear') {
@@ -135,7 +124,6 @@
           output.scrollTop = output.scrollHeight
         }
 
-        // Autocomplete function for command suggestions
         function autocomplete(input) {
           if (!input) return ''
           const args = input.split(' ')
@@ -160,7 +148,6 @@
           return input
         }
 
-        // Event listener for handling user input
         inputLine.addEventListener('keydown', function (event) {
           cursor.style.display = 'none'
           if (event.key === 'Enter') {
@@ -194,7 +181,6 @@
           }
         })
 
-        // Cursor visibility control
         inputLine.addEventListener('keyup', function () {
           cursor.style.display = 'inline-block'
         })
@@ -205,22 +191,20 @@
           cursor.style.display = 'none'
         })
 
-        // ASCII Art manipulation
         const art1 =
           `                                       ****         #                                                  
                         ###*6u1x****====+***xgrd                                             
                          ****+*****+=+**++*5vyb+***#*#        +++*                           
                  3u7x*   #**#*=++==++8chm*******++****#   #ym01++***                         
                  **##**+**#*+pdrv++++***+*+-=+#**+=  8nw2**+** +****                         
-                *a356%%******##***#bdtg* *== *****cmpx****++*+*++ ****                       
-               nsk7#%##%*#*+#***sql3%*+++=**k2iq*+++=**++===u6lq***+===+***#+                
+                *a356%%******##***sql3%*+++=**k2iq*+++=**++===u6lq***+===+***#+                
               *****89y2***+=+++-kl9g%##%####%#***jqv7****+*++=+xalu-****+++***               
                 *#**#*bes6***++*+**#*o314*###**##5wop#++*= *+++===+**6erx******              
                ##***+**hvtm******++**h3km#+*%#*#*++++++=*** 1on3*#+*++===jxh9**              
           ******#*********qxi4*++*+*#+**x8qb##**++***+qbei*+++*********+****cux0**          
        +#+*++**+=*ahny* +**+-- ++**+**9evu     +**+*++       +###***+8l7q  **#**+**         
       **+*#****n5g8%#*+***=+**0zbi++**====++ ==     +**+++vdj8=--=#####%##*+inck++          
-      *##*#******++*v6hc*  ==***++**3a97*+*   ++****+***++++f7tl** *#%##%##*++++*#          
+      *##*#******++*v6hc*  ==***++**3a97*+*   ++****+***++++f7tl** *#%##%##*++++*#           
        7405***+*#****=+***%lmhg%%%#++**###36eo#**##*###%##%##iup4**= +####rqg6********      
        +####%####xmqb*#%%#+*#*+##**##iz7a##*##*#%%%#%#eg3n%#%##****+x7m4#*#*##*+# ##***     
        q570#*****##%#%**+*#j48b##+*****##%*%xm4u%#*##+*#% ##***%712x###%%%%###****s6d8=     
@@ -274,54 +258,70 @@
                                 #%#### %#+*+*    %#*%#*+*## %#*                              
                                 %#*  #**#**###    ##%###*+   `.split('\n')
 
-        // Anzahl der Zeichen, die markiert werden sollen
         const numCharsToMark = 28
 
-        // Nur Buchstaben und Zahlen filtern
         function getLetterAndNumberPositions(art) {
-          const positions = []
-          art.forEach((line, row) => {
+          return art.reduce((positions, line, row) => {
             line.split('').forEach((char, col) => {
               if (/[a-zA-Z0-9]/.test(char)) {
-                positions.push({ row, col })
+                positions.push({ row, col });
               }
-            })
-          })
-          return positions
+            });
+            return positions;
+          }, []);
         }
 
-        // Zufällige Positionen aus den gültigen auswählen
         function getRandomPositionsFromFiltered(positions, count) {
-          const shuffled = positions.sort(() => 0.5 - Math.random())
-          return shuffled.slice(0, count)
+          // Fisher-Yates shuffle and slice for better randomization
+          const shuffled = [...positions];
+          for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+          }
+          
+          return shuffled
+            .slice(0, count)
+            .sort((a, b) => a.row === b.row ? a.col - b.col : a.row - b.row);
         }
 
-        // Art2 markieren
         function markArt(art2, positions) {
-          const markedArt = [...art2]
-          positions.forEach(pos => {
-            const line = markedArt[pos.row].split('')
-            line[pos.col] = `<span style="color: green;">${line[pos.col]}</span>`
-            markedArt[pos.row] = line.join('')
-          })
-          return markedArt.join('\n')
+          const markedArt = art2.map(line => line.split(''));
+          const markedChars = [];
+          const originalChars = [];
+
+          positions.forEach(({ row, col }) => {
+            // Get character from art1 instead of art2
+            const originalChar = art1[row].split('')[col];
+            originalChars.push(originalChar);
+            
+            const char = markedArt[row][col];
+            markedChars.push(char);
+            markedArt[row][col] = `<span style="color: green;">${char}</span>`;
+          });
+
+          // Store original characters in localStorage
+          try {
+            localStorage.setItem('originalMarkedChars', originalChars.join(''));
+          } catch (e) {
+            console.error('LocalStorage error:', e);
+          }
+
+          return {
+            art: markedArt.map(line => line.join('')).join('\n'),
+            chars: markedChars.join('')
+          };
         }
 
-        // Positionen der Buchstaben und Zahlen in art1 ermitteln
         const positions = getLetterAndNumberPositions(art1)
-
-        // Zufällige Positionen auswählen
         const randomPositions = getRandomPositionsFromFiltered(
           positions,
           numCharsToMark
         )
+        const markedResult = markArt(art2, randomPositions)
 
-        // Art2 markieren
-        const markedArt2 = markArt(art2, randomPositions)
-
-        // Markiertes Art2 anzeigen
         const asciiArtContainer = document.getElementById('ascii-art')
-        asciiArtContainer.innerHTML = markedArt2
+        asciiArtContainer.innerHTML = markedResult.art
+        
       })
     </script>
   </body>
