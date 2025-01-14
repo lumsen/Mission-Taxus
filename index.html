@@ -261,45 +261,55 @@
         const numCharsToMark = 28
 
         function getLetterAndNumberPositions(art) {
-          return art.reduce((positions, line, row) => {
-            line.split('').forEach((char, col) => {
-              if (/[a-zA-Z0-9]/.test(char)) {
-                positions.push({ row, col });
+          // Use reduce for better performance
+          const positions = [];
+          art.forEach((line, row) => {
+            // Optimize regex to compile only once
+            const regex = /[a-zA-Z0-9]/;
+            const chars = line.split('');
+            chars.forEach((char, col) => {
+              if (regex.test(char)) {
+                positions.push({ row, col, char }); // Store the character for later use
               }
             });
-            return positions;
-          }, []);
+          });
+          return positions;
         }
 
         function getRandomPositionsFromFiltered(positions, count) {
-          // Fisher-Yates shuffle and slice for better randomization
-          const shuffled = [...positions];
-          for (let i = shuffled.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-          }
+          if (!positions.length || count <= 0) return [];
           
+          // Fisher-Yates shuffle implementation
+          const shuffled = [...positions];
+          let currentIndex = shuffled.length;
+          
+          while (currentIndex > 0) {
+            const randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex--;
+            [shuffled[currentIndex], shuffled[randomIndex]] = 
+            [shuffled[randomIndex], shuffled[currentIndex]];
+          }
+
+          // Sort by row and column for consistent display
           return shuffled
             .slice(0, count)
-            .sort((a, b) => a.row === b.row ? a.col - b.col : a.row - b.row);
+            .sort((a, b) => (a.row === b.row) ? (a.col - b.col) : (a.row - b.row));
         }
 
         function markArt(art2, positions) {
+          // Create a deep copy of art2
           const markedArt = art2.map(line => line.split(''));
           const markedChars = [];
           const originalChars = [];
 
-          positions.forEach(({ row, col }) => {
-            // Get character from art1 instead of art2
-            const originalChar = art1[row].split('')[col];
-            originalChars.push(originalChar);
-            
-            const char = markedArt[row][col];
-            markedChars.push(char);
-            markedArt[row][col] = `<span style="color: green;">${char}</span>`;
+          positions.forEach(pos => {
+            // Use pos.char instead of recalculating from art1
+            originalChars.push(pos.char);
+            const currentChar = markedArt[pos.row][pos.col];
+            markedChars.push(currentChar);
+            markedArt[pos.row][pos.col] = `<span style="color: green;">${currentChar}</span>`;
           });
 
-          // Store original characters in localStorage
           try {
             localStorage.setItem('originalMarkedChars', originalChars.join(''));
           } catch (e) {
@@ -313,12 +323,13 @@
         }
 
         const positions = getLetterAndNumberPositions(art1)
+        console.log(positions)
         const randomPositions = getRandomPositionsFromFiltered(
           positions,
           numCharsToMark
         )
         const markedResult = markArt(art2, randomPositions)
-
+        
         const asciiArtContainer = document.getElementById('ascii-art')
         asciiArtContainer.innerHTML = markedResult.art
         
