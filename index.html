@@ -5,44 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Intranet TAXUS</title>
     <link rel="stylesheet" href="styles/main.css" />
+    <link
+      rel="stylesheet"
+      href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
   </head>
   <body>
     <div id="terminal">
       <div id="ascii-art-container">
         <pre id="ascii-art">
-                                       ****         #                                                  
-                        ###***++****====+****                                                
-                         ****+*****+=+**++*****+***#*#        +++*                           
-                 #****   #**#*=++==++=+*********++****#   #*+*+++***                         
-                 **##**+**#*++*++++++***+*+-=+#**+=  ******+** +****                         
-                **#+*%%******##***#***#* *== *****##*+****++*+*++ ****                       
-               ***+#%##%*#*+#***#%*%%*+++=*******+++=**++====++#***+===+***#+                
-              *****++*#***+=+++-+*##%##%####%#*****#*****+*++=+=- =-****+++***               
-                *#**#*++*+***++*+**#*###%*###**####**#++*= *+++===+**+=+*******              
-               ##***+**++********++*****##+*%#*#*++++++=*** ===-*#+*++===++****              
-          ******#*********#*=**++*+*#+******##**++***++=***+++*********+****+++***           
-       +#+*++**+=*+**+* +**+-- ++**+**=        +**+*++       +###***+++++  **#**+**          
-      **+*#****+++#%#*+***=+**++*+++**====++ ==     +**+++=-= =--=#####%##*++ **++           
-      *##*#******++*#*+#*  ==***++*****+*+*   ++****+***++++****** *#%##%##*++++*#           
-       * #****+*#****=+***%%###%%%#++**######*#**##*###%##%####*+**= +######*+********       
-       +####%#######**#%%#+*#*+##**###%%%##*##*#%%%#%#+###%#%##****+++*%#*#*##*+# ##***      
-       =*+##*****##%#%**+*#*#+*##+*****##%*%*++%%#*##+*#% ##***%%*+*###%%%%###*****#*+=      
-         *#*##%%%#####**#@%%%*######%%*+*%%*# %%#++*+*#***#%#*++*#*+**#@%*#####*#*+*++**      
-         +#*****+*********+ #%%%%%%%%+**###% %#++*+*#***#%#*++*#*+**#@%*#####*#*+*++**      
-         *+ +++*+++++=** *+**     %%%%*+*##%%%###%%#++*#%%***#%%###%%####***##*#****#        
-       +**#+**+= + =****####**     %@%%#++*%%#***%##=*#####%     *#*##**##*##*##             
-       +#*+*#**+++**####%##  ##*#%#**#%%#+**##*###*+#%#**#*#*++ *##**+***##*+=               
-      *%#***#*######**#####*##*##%#*++*#%###*+####*#***#%%##*##*#%%%###**##%#*               
-       *####****+++%@* ##*#***+#  @%%%+++##+*++++*+*##*##*    %###%%%%%*+***%#               
-        +  *##%#%%%***= *****%      %%%%#*#*#**#%****###        #    **=-*#**                
-         ****+***#%%%####%            ####**=-+##*#*#**#             #*+***#                 
-        **#%%*+*##*#*####             ###***+-+**+=*##*                                      
-         #####*##*#+*                %%##*+*#+***++*#####                                    
-             *** +*               %%%%%#+**#+=+++++**######*                                 
-                                ########%*#*#%%#**+*####**###                                
-                                #%#### %#+*+*    %#*%#*+*## %#*                              
-                                %#*  #**#**###    ##%###*+                                   
-              /\/\/\/\/\/\/\/\/\/\/### Station TAXUS #*#***\/\/\/\/\/\/\/\/\/\/\            
+          <!-- ...existing code... -->
         </pre>
       </div>
       <div id="output"></div>
@@ -54,164 +28,301 @@
     </div>
     <script src="scripts/commands.js"></script>
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const inputLine = document.getElementById("input-line");
-        const cursor = document.querySelector(".cursor");
-        const output = document.getElementById("output");
+      document.addEventListener('DOMContentLoaded', function () {
+        const inputLine = document.getElementById('input-line')
+        const cursor = document.querySelector('.cursor')
+        const output = document.getElementById('output')
 
         // Ensure output is accessible in commands.js
-        window.output = output;
+        window.output = output
 
         // Command and Project List for Autocomplete
         const commandList = Object.keys(commandDescriptions).concat(
           Object.keys(projects)
-            .filter((proj) => !proj.startsWith("x"))
-            .map((proj) => "projects " + proj)
-        );
+            .filter(proj => !proj.startsWith('x'))
+            .map(proj => 'projects ' + proj)
+        )
 
-        let commandHistory = [];
-        let historyIndex = -1;
+        let commandHistory = []
+        let historyIndex = -1
 
         // Function to set cursor position at the end
         function setCursorToEnd(element) {
           setTimeout(() => {
-            element.setSelectionRange(element.value.length, element.value.length);
-          }, 0);
+            element.setSelectionRange(
+              element.value.length,
+              element.value.length
+            )
+          }, 0)
         }
 
         // Function to replace words with random characters and change color of each character individually
         function redactWords(element, words) {
-          const wordList = words.split(",");
+          const wordList = words.split(',')
           wordList.forEach(word => {
-            const regex = new RegExp(`\\b${word.trim()}\\b`, "gi");
-            const matches = element.innerHTML.match(regex);
+            const regex = new RegExp(`\\b${word.trim()}\\b`, 'gi')
+            const matches = element.innerHTML.match(regex)
             if (matches) {
               matches.forEach(match => {
-                let redactedText = match.split('').map(char => `<span>${char}</span>`).join('');
-                element.innerHTML = element.innerHTML.replace(regex, `<span class="portfolio-experiment">${redactedText}</span>`);
-                const spans = element.querySelectorAll('.portfolio-experiment span');
+                let redactedText = match
+                  .split('')
+                  .map(char => `<span>${char}</span>`)
+                  .join('')
+                element.innerHTML = element.innerHTML.replace(
+                  regex,
+                  `<span class="portfolio-experiment">${redactedText}</span>`
+                )
+                const spans = element.querySelectorAll(
+                  '.portfolio-experiment span'
+                )
                 spans.forEach((span, index) => {
                   setTimeout(() => {
                     setTimeout(() => {
-                      const randomChar = String.fromCharCode(33 + Math.floor(Math.random() * 94)); // Random character from '!' to '~'
-                      const randomColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`; // Random color
-                      span.style.color = randomColor;
-                      span.textContent = randomChar;
-                    }, index * (Math.random() * 50 + 50)); // Delay between 50-100ms for each character change
-                  }, Math.random() * 100 + 500); // Initial delay between 50-150ms
-                });
-              });
+                      const randomChar = String.fromCharCode(
+                        33 + Math.floor(Math.random() * 94)
+                      ) // Random character from '!' to '~'
+                      const randomColor = `#${Math.floor(
+                        Math.random() * 16777215
+                      ).toString(16)}` // Random color
+                      span.style.color = randomColor
+                      span.textContent = randomChar
+                    }, index * (Math.random() * 50 + 50)) // Delay between 50-100ms for each character change
+                  }, Math.random() * 100 + 500) // Initial delay between 50-150ms
+                })
+              })
             }
-          });
+          })
         }
 
         // Execute command and display output
-		function executeCommand(command) {
-    const args = command.split(" ");
-    let response;
+        function executeCommand(command) {
+          const args = command.split(' ')
+          let response
 
-    if (args[0] === "projects" && args.length > 1) {
-        const projectName = args.slice(1).join(" ");
-        response = projects[projectName] || `Projekt nicht gefunden: ${projectName}`;
-    } else if (args[0] === "personnel" && args.length > 1) {
-        const personnelName = args.slice(1).join(" ");
-        response = personnel[personnelName] || `Mitarbeitende/r nicht gefunden: ${personnelName}`;
-    } else if (commands[args[0]]) {
-        response = commands[args[0]]();
-    } else {
-        response = `Befehl nicht gefunden: ${command}`;
-    }
+          if (args[0] === 'projects' && args.length > 1) {
+            const projectName = args.slice(1).join(' ')
+            response =
+              projects[projectName] || `Projekt nicht gefunden: ${projectName}`
+          } else if (args[0] === 'personnel' && args.length > 1) {
+            const personnelName = args.slice(1).join(' ')
+            response =
+              personnel[personnelName] ||
+              `Mitarbeitende/r nicht gefunden: ${personnelName}`
+          } else if (commands[args[0]]) {
+            response = commands[args[0]]()
+          } else {
+            response = `Befehl nicht gefunden: ${command}`
+          }
 
-    if (response) {
-        const responseElement = document.createElement("p");
-        responseElement.className = "output";
-        responseElement.innerHTML = response.replace(/\n/g, "<br>");
-        output.appendChild(responseElement);
+          if (response) {
+            const responseElement = document.createElement('p')
+            responseElement.className = 'output'
+            responseElement.innerHTML = response.replace(/\n/g, '<br>')
+            output.appendChild(responseElement)
 
-        redactWords(responseElement, "xrayAnalysis,Dr. Sarah Schmidt,DATENSPEICHER BESCHÄDIGT"); // Worte ersetzen
-    }
+            redactWords(
+              responseElement,
+              'xrayAnalysis,Dr. Sarah Schmidt,DATENSPEICHER BESCHÄDIGT'
+            ) // Worte ersetzen
+          }
 
-    if (args[0] !== "clear") {
-        const inputElement = document.createElement("p");
-        inputElement.className = "output user-input";
-        inputElement.textContent = `user@TAXUS.net> ${command}`;
-        output.appendChild(inputElement);
-    }
-    output.scrollTop = output.scrollHeight;
-}
-
-		
-		
+          if (args[0] !== 'clear') {
+            const inputElement = document.createElement('p')
+            inputElement.className = 'output user-input'
+            inputElement.textContent = `user@TAXUS.net> ${command}`
+            output.appendChild(inputElement)
+          }
+          output.scrollTop = output.scrollHeight
+        }
 
         // Autocomplete function for command suggestions
         function autocomplete(input) {
-          if (!input) return "";
-          const args = input.split(" ");
-          let matches = [];
+          if (!input) return ''
+          const args = input.split(' ')
+          let matches = []
           if (args.length === 1) {
-            matches = commandList.filter((cmd) => cmd.startsWith(input));
-          } else if (args[0] === "projects" && args.length === 2) {
+            matches = commandList.filter(cmd => cmd.startsWith(input))
+          } else if (args[0] === 'projects' && args.length === 2) {
             matches = Object.keys(projects)
-              .map((proj) => "projects " + proj)
-              .filter((cmd) => cmd.startsWith(args[0] + " " + args[1]));
+              .map(proj => 'projects ' + proj)
+              .filter(cmd => cmd.startsWith(args[0] + ' ' + args[1]))
           }
           if (matches.length === 1) {
-            return matches[0];
+            return matches[0]
           } else if (matches.length > 1) {
-            const suggestionElement = document.createElement("p");
-            suggestionElement.className = "output";
-            suggestionElement.innerHTML = "Mögliche Befehle: " + matches.join(", ");
-            output.appendChild(suggestionElement);
-            output.scrollTop = output.scrollHeight;
+            const suggestionElement = document.createElement('p')
+            suggestionElement.className = 'output'
+            suggestionElement.innerHTML =
+              'Mögliche Befehle: ' + matches.join(', ')
+            output.appendChild(suggestionElement)
+            output.scrollTop = output.scrollHeight
           }
-          return input;
+          return input
         }
 
         // Event listener for handling user input
-        inputLine.addEventListener("keydown", function (event) {
-          cursor.style.display = "none";
-          if (event.key === "Enter") {
-            const command = inputLine.value.trim();
+        inputLine.addEventListener('keydown', function (event) {
+          cursor.style.display = 'none'
+          if (event.key === 'Enter') {
+            const command = inputLine.value.trim()
             if (command) {
-              commandHistory.push(command);
-              historyIndex = commandHistory.length;
-              inputLine.value = "";
-              executeCommand(command);
+              commandHistory.push(command)
+              historyIndex = commandHistory.length
+              inputLine.value = ''
+              executeCommand(command)
             }
-          } else if (event.key === "ArrowUp") {
+          } else if (event.key === 'ArrowUp') {
             if (historyIndex > 0) {
-              historyIndex--;
-              inputLine.value = commandHistory[historyIndex];
-              setCursorToEnd(inputLine);
+              historyIndex--
+              inputLine.value = commandHistory[historyIndex]
+              setCursorToEnd(inputLine)
             }
-          } else if (event.key === "ArrowDown") {
+          } else if (event.key === 'ArrowDown') {
             if (historyIndex < commandHistory.length - 1) {
-              historyIndex++;
-              inputLine.value = commandHistory[historyIndex];
+              historyIndex++
+              inputLine.value = commandHistory[historyIndex]
             } else {
-              historyIndex = commandHistory.length;
-              inputLine.value = "";
+              historyIndex = commandHistory.length
+              inputLine.value = ''
             }
-            setCursorToEnd(inputLine);
-          } else if (event.key === "Tab") {
-            event.preventDefault();
-            const completed = autocomplete(inputLine.value);
-            inputLine.value = completed;
-            setCursorToEnd(inputLine);
+            setCursorToEnd(inputLine)
+          } else if (event.key === 'Tab') {
+            event.preventDefault()
+            const completed = autocomplete(inputLine.value)
+            inputLine.value = completed
+            setCursorToEnd(inputLine)
           }
-        });
+        })
 
         // Cursor visibility control
-        inputLine.addEventListener("keyup", function () {
-          cursor.style.display = "inline-block";
-        });
-        inputLine.addEventListener("focus", function () {
-          cursor.style.display = "inline-block";
-        });
-        inputLine.addEventListener("blur", function () {
-          cursor.style.display = "none";
-        });
-      });
+        inputLine.addEventListener('keyup', function () {
+          cursor.style.display = 'inline-block'
+        })
+        inputLine.addEventListener('focus', function () {
+          cursor.style.display = 'inline-block'
+        })
+        inputLine.addEventListener('blur', function () {
+          cursor.style.display = 'none'
+        })
+
+        // ASCII Art manipulation
+        const art1 =
+          `                                       ****         #                                                  
+                        ###*6u1x****====+***xgrd                                             
+                         ****+*****+=+**++*5vyb+***#*#        +++*                           
+                 3u7x*   #**#*=++==++8chm*******++****#   #ym01++***                         
+                 **##**+**#*+pdrv++++***+*+-=+#**+=  8nw2**+** +****                         
+                *a356%%******##***#bdtg* *== *****cmpx****++*+*++ ****                       
+               nsk7#%##%*#*+#***sql3%*+++=**k2iq*+++=**++===u6lq***+===+***#+                
+              *****89y2***+=+++-kl9g%##%####%#***jqv7****+*++=+xalu-****+++***               
+                *#**#*bes6***++*+**#*o314*###**##5wop#++*= *+++===+**6erx******              
+               ##***+**hvtm******++**h3km#+*%#*#*++++++=*** 1on3*#+*++===jxh9**              
+          ******#*********qxi4*++*+*#+**x8qb##**++***+qbei*+++*********+****cux0**          
+       +#+*++**+=*ahny* +**+-- ++**+**9evu     +**+*++       +###***+8l7q  **#**+**         
+      **+*#****n5g8%#*+***=+**0zbi++**====++ ==     +**+++vdj8=--=#####%##*+inck++          
+      *##*#******++*v6hc*  ==***++**3a97*+*   ++****+***++++f7tl** *#%##%##*++++*#          
+       7405***+*#****=+***%lmhg%%%#++**###36eo#**##*###%##%##iup4**= +####rqg6********      
+       +####%####xmqb*#%%#+*#*+##**##iz7a##*##*#%%%#%#eg3n%#%##****+x7m4#*#*##*+# ##***     
+       q570#*****##%#%**+*#j48b##+*****##%*%xm4u%#*##+*#% ##***%712x###%%%%###****s6d8=     
+         *#*##%%%#####**rivq%*######8g3u*%%*# %%#++*+*nrqx#%#*++*#*+*tdrk*#####*#*+r213*     
+         +#*****46h7******+ #%%zwms%%+**###% %#ywu2*#***#%#*++*#r18e#@%*#####fp9a*++**     
+         *+ +++*j25r+=** *+**     %hyr5+*##%%%###%%mqw2#%%***#%8c9g%%####***##*#x8h7#       
+       +**#+**+= + =**m3y1##**     %@%%#i4ny%#***%##=*#####%     *652m**##*##*1q0e          
+       +#*+*#**+++ly6g##%##  ##*#%#*dgim#+**##*###1u3n#**#*#*++ *##**+**74sf+=               
+      *%#***81er####**#####*##xa0n#*++*#%###*+####r2cm*#%%##*##*#%%%###78ie%#*               
+       *####****+ur9y* ##*#***+#  @%g4ta+##+*++++*+*##*##o0n4 %###%%%%%*+***%#               
+        +  *r8qo%%%***= *xn87%      %%%%#*#*#**#%**uir6#        #    **=-*#gd3u              
+         ****+***#%%%####%            yfxz**=-+##*#yeju#             #*+***#                 
+        **#%%*+*#jupb####             ###***+-+**nw1r#*                                      
+         #####*kznm+*                %%##*+*#+***++*sqd6#                                    
+             *** +*               %%%%%4hdf#+=+++++9e1f####*                                 
+                                ######um1g#*#%%#**+*####*hrqf                                 
+                                #%#### %#+*+*    %#*%#*rnyj %#*                              
+                                %#*  #**#**###    ##%###*+   `.split('\n')
+
+        const art2 =
+          `                                       ****         #                                                  
+                        ###***++****====+****                                                
+                         ****+*****+=+**++*****+***#*#        +++*                           
+                 #****   #**#*=++==++=+*********++****#   #*+*+++***                         
+                 **##**+**#*++*++++++***+*+-=+#**+=  ******+** +****                         
+                **#+*%%******##***#***#* *== *****##*+****++*+*++ ****                       
+               ***+#%##%*#*+#***#%*%%*+++=*******+++=**++====++#***+===+***#+                
+              *****++*#***+=+++-+*##%##%####%#*****#*****+*++=+=- =-****+++***               
+                *#**#*++*+***++*+**#*###%*###**####**#++*= *+++===+**+=+*******              
+               ##***+**++********++*****##+*%#*#*++++++=*** ===-*#+*++===++****              
+          ******#*********#*=**++*+*#+******##**++***++=***+++*********+****+++***          
+       +#+*++**+=*+**+* +**+-- ++**+**=        +**+*++       +###***+++++  **#**+**         
+      **+*#****+++#%#*+***=+**++*+++**====++ ==     +**+++=-= =--=#####%##*++ **++          
+      *##*#******++*#*+#*  ==***++*****+*+*   ++****+***++++****** *#%##%##*++++*#           
+       * #****+*#****=+***%%###%%%#++**######*#**##*###%##%####*+**= +######*+********       
+       +####%#######**#%%#+*#*+##**###%%%##*##*#%%%#%#+###%#%##****+++*%#*#*##*+# ##***      
+       =*+##*****##%#%**+*#*#+*##+*****##%*%*++%%#*##+*#% ##***%%*+*###%%%%###*****#*+=      
+         *#*##%%%#####**#@%%%*######%%*+*%%*# %%#++*+*#***#%#*++*#*+**#@%*#####*#*+*++**      
+         +#*****+*********+ #%%%%%%%%+**###% %#++*+*#***#%#*++*#*+**#@%*#####*#*+*++**      
+         *+ +++*+++++=** *+**     %%%%*+*##%%%###%%#++*#%%***#%%###%%####***##*#****#        
+       +**#+**+= + =****####**     %@%%#++*%%#***%##=*#####%     *#*##**##*##*##              
+       +#*+*#**+++**####%##  ##*#%#**#%%#+**##*###*+#%#**#*#*++ *##**+***##*+=               
+      *%#***#*######**#####*##*##%#*++*#%###*+####*#***#%%##*##*#%%%###**##%#*               
+       *####****+++%@* ##*#***+#  @%%%+++##+*++++*+*##*##*    %###%%%%%*+***%#               
+        +  *##%#%%%***= *****%      %%%%#*#*#**#%****###        #    **=-*#**               
+         ****+***#%%%####%            ####**=-+##*#*#**#             #*+***#                 
+        **#%%*+*##*#*####             ###***+-+**+=*##*                                      
+         #####*##*#+*                %%##*+*#+***++*#####                                    
+             *** +*               %%%%%#+**#+=+++++**######*                                 
+                                ########%*#*#%%#**+*####**###                                
+                                #%#### %#+*+*    %#*%#*+*## %#*                              
+                                %#*  #**#**###    ##%###*+   `.split('\n')
+
+        // Anzahl der Zeichen, die markiert werden sollen
+        const numCharsToMark = 28
+
+        // Nur Buchstaben und Zahlen filtern
+        function getLetterAndNumberPositions(art) {
+          const positions = []
+          art.forEach((line, row) => {
+            line.split('').forEach((char, col) => {
+              if (/[a-zA-Z0-9]/.test(char)) {
+                positions.push({ row, col })
+              }
+            })
+          })
+          return positions
+        }
+
+        // Zufällige Positionen aus den gültigen auswählen
+        function getRandomPositionsFromFiltered(positions, count) {
+          const shuffled = positions.sort(() => 0.5 - Math.random())
+          return shuffled.slice(0, count)
+        }
+
+        // Art2 markieren
+        function markArt(art2, positions) {
+          const markedArt = [...art2]
+          positions.forEach(pos => {
+            const line = markedArt[pos.row].split('')
+            line[pos.col] = `<span style="color: green;">${line[pos.col]}</span>`
+            markedArt[pos.row] = line.join('')
+          })
+          return markedArt.join('\n')
+        }
+
+        // Positionen der Buchstaben und Zahlen in art1 ermitteln
+        const positions = getLetterAndNumberPositions(art1)
+
+        // Zufällige Positionen auswählen
+        const randomPositions = getRandomPositionsFromFiltered(
+          positions,
+          numCharsToMark
+        )
+
+        // Art2 markieren
+        const markedArt2 = markArt(art2, randomPositions)
+
+        // Markiertes Art2 anzeigen
+        const asciiArtContainer = document.getElementById('ascii-art')
+        asciiArtContainer.innerHTML = markedArt2
+      })
     </script>
   </body>
 </html>
