@@ -26,9 +26,42 @@
         <div class="cursor"></div>
       </div>
     </div>
-    <!-- Load all scripts in order -->
-    <script src="/scripts/config.js"></script>
-    <script src="/scripts/commands.js"></script>
+    <!-- Load scripts in correct order -->
+    <script>
+      // First define CONFIG
+      window.CONFIG = {
+        TERMINAL: {
+          NUM_CHARS_TO_MARK: 28,
+          REGEX: {
+            ALPHANUMERIC: /[a-zA-Z0-9]/
+          }
+        },
+        STORAGE: {
+          KEYS: {
+            ATTEMPTS: 'unlockAttempts',
+            MARKED_CHARS: 'originalMarkedChars'
+          }
+        },
+        MESSAGE: {
+          TYPES: {
+            ERROR: 'error',
+            SUCCESS: 'success',
+            INFO: 'info'
+          },
+          TIMEOUT: {
+            DEFAULT: 5000,
+            ERROR: 3000
+          }
+        }
+      };
+
+      // Initialize global objects that commands.js expects
+      window.commandDescriptions = {};
+      window.commands = {};
+      window.projects = {};
+      window.personnel = {};
+    </script>
+    <script src="scripts/commands.js"></script>
     <script>
       // Define ASCII art
       window.art1 = `                               ****         #                                                
@@ -98,6 +131,7 @@
                                 %#*  #**#**###    ##%###*+                                   
 `.split('\n');
 
+      // Define Terminal class
       window.Terminal = class {
         constructor() {
           this.elements = {

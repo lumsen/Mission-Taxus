@@ -573,37 +573,94 @@ function getStoredChars() {
 function createAndShowUnlockPopup(attempts) {
   const popup = document.createElement('div');
   popup.id = 'unlock-popup';
+  popup.style.backgroundColor = 'var(--bg-color)';
+  popup.style.zIndex = 'var(--z-index-popup)'; // Changed from hardcoded 9999 to CSS variable
+  popup.style.position = 'fixed';  // Ensure proper stacking context
+  popup.style.top = '50%';
+  popup.style.left = '50%';
+  popup.style.transform = 'translate(-50%, -50%)';
   popup.innerHTML = `
     <div class="popup-content">
       <p>Bitte geben Sie den ${CONSTANTS.CODE_LENGTH}-stelligen Code zum Entsperren des LockDowns ein:</p>
       <input type="text" id="unlock-code" maxlength="${CONSTANTS.CODE_LENGTH}" />
-      <button id="unlock-submit">Submit</button>
-      <button id="unlock-cancel">Cancel</button>
+      <div style="margin-top: 10px;">
+        <button id="unlock-submit">Submit</button>
+        <button id="unlock-cancel">Cancel</button>
+      </div>
     </div>
   `;
 
-  const cleanup = () => document.body.removeChild(popup);
-  
+  let isProcessing = false;
+
+  const cleanup = () => {
+    if (document.body.contains(popup)) {
+      document.body.removeChild(popup);
+    }
+    isProcessing = false;
+  };
+
   const handleSubmit = () => {
-    const code = document.getElementById('unlock-code').value;
-    if (code === storedChars) {
-      showMessage(CONSTANTS.MESSAGE_TYPES.SUCCESS, CONSTANTS.ERROR_MESSAGES.CODE_ACCEPTED);
-      cleanup();
-      localStorage.removeItem(CONSTANTS.STORAGE_KEYS.ATTEMPTS);
-    } else {
-      attempts++;
-      localStorage.setItem(CONSTANTS.STORAGE_KEYS.ATTEMPTS, attempts);
-      handleInvalidCode(attempts, cleanup);
+    if (isProcessing) return;
+    isProcessing = true;
+
+    try {
+      const codeInput = document.getElementById('unlock-code');
+      if (!codeInput) return;
+      
+      const inputCode = codeInput.value.trim();
+      // Get the stored code using the correct key from CONSTANTS
+      const storedCode = localStorage.getItem(CONSTANTS.STORAGE_KEYS.MARKED_CHARS);
+      
+      if (!storedCode) {
+        showMessage(CONSTANTS.MESSAGE_TYPES.ERROR, CONSTANTS.ERROR_MESSAGES.NO_CHARS);
+        cleanup();
+        return;
+      }
+
+      if (inputCode === storedCode) {
+        showMessage(CONSTANTS.MESSAGE_TYPES.SUCCESS, CONSTANTS.ERROR_MESSAGES.CODE_ACCEPTED);
+        localStorage.setItem(CONSTANTS.STORAGE_KEYS.ATTEMPTS, '0');
+        cleanup();
+      } else {
+        attempts++;
+        localStorage.setItem(CONSTANTS.STORAGE_KEYS.ATTEMPTS, attempts.toString());
+        showMessage(CONSTANTS.MESSAGE_TYPES.ERROR, CONSTANTS.ERROR_MESSAGES.INVALID_CODE);
+        
+        if (attempts >= CONSTANTS.MAX_ATTEMPTS) {
+          cleanup();
+          showMessage(CONSTANTS.MESSAGE_TYPES.ERROR, CONSTANTS.ERROR_MESSAGES.MAX_ATTEMPTS);
+        } else {
+          // Reset processing flag after error message timeout
+          setTimeout(() => {
+            isProcessing = false;
+          }, CONSTANTS.POPUP.ERROR_DELAY);
+        }
+      }
+    } catch (error) {
+      console.error('Submit error:', error);
+      showMessage(CONSTANTS.MESSAGE_TYPES.ERROR, 'Ein Fehler ist aufgetreten.');
+      setTimeout(() => {
+        isProcessing = false;
+      }, CONSTANTS.POPUP.ERROR_DELAY);
     }
   };
 
   document.body.appendChild(popup);
+  
+  // Setup event listeners with null checks
   const unlockInput = document.getElementById('unlock-code');
+  const submitButton = document.getElementById('unlock-submit');
+  const cancelButton = document.getElementById('unlock-cancel');
   
-  document.getElementById('unlock-submit').addEventListener('click', handleSubmit);
-  document.getElementById('unlock-cancel').addEventListener('click', cleanup);
-  unlockInput.addEventListener('keydown', e => e.key === 'Enter' && handleSubmit());
-  
-  popup.style.pointerEvents = 'auto';
-  unlockInput.focus();
+  if (submitButton) submitButton.addEventListener('click', handleSubmit);
+  if (cancelButton) cancelButton.addEventListener('click', cleanup);
+  if (unlockInput) {
+    unlockInput.focus();
+    unlockInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleSubmit();
+      }
+    });
+  }
 }
