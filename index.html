@@ -3,10 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';"
-    />
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   style-src 'self' 'unsafe-inline'; 
+                   script-src 'self' 'unsafe-inline';
+                   img-src 'self';
+                   connect-src 'none';" />
+    <meta name="description" content="Terminal Interface für das Intranet TAXUS" />
+    <meta name="theme-color" content="#2e2e2e" />
     <title>Intranet TAXUS</title>
     <link rel="stylesheet" href="styles/main.css" />
   </head>
@@ -22,177 +26,12 @@
         <div class="cursor"></div>
       </div>
     </div>
+    <!-- Load all scripts in order -->
+    <script src="scripts/config.js"></script>
     <script src="scripts/commands.js"></script>
     <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        const inputLine = document.getElementById('input-line')
-        const cursor = document.querySelector('.cursor')
-        const output = document.getElementById('output')
-
-        window.output = output
-
-        const commandList = Object.keys(commandDescriptions).concat(
-          Object.keys(projects)
-            .filter(proj => !proj.startsWith('x'))
-            .map(proj => 'projects ' + proj)
-        )
-
-        let commandHistory = []
-        let historyIndex = -1
-
-        function setCursorToEnd(element) {
-          setTimeout(() => {
-            element.setSelectionRange(
-              element.value.length,
-              element.value.length
-            )
-          }, 0)
-        }
-
-        function redactWords(element, words) {
-          const wordList = words.split(',')
-          wordList.forEach(word => {
-            const regex = new RegExp(`\\b${word.trim()}\\b`, 'gi')
-            const matches = element.innerHTML.match(regex)
-            if (matches) {
-              matches.forEach(match => {
-                let redactedText = match
-                  .split('')
-                  .map(char => `<span>${char}</span>`)
-                  .join('')
-                element.innerHTML = element.innerHTML.replace(
-                  regex,
-                  `<span class="portfolio-experiment">${redactedText}</span>`
-                )
-                const spans = element.querySelectorAll(
-                  '.portfolio-experiment span'
-                )
-                spans.forEach((span, index) => {
-                  setTimeout(() => {
-                    const randomChar = String.fromCharCode(
-                      33 + Math.floor(Math.random() * 94)
-                    )
-                    const randomColor = `#${Math.floor(
-                      Math.random() * 16777215
-                    ).toString(16)}`
-                    span.style.color = randomColor
-                    span.textContent = randomChar
-                  }, index * (Math.random() * 50 + 50) + Math.random() * 100 + 500)
-                })
-              })
-            }
-          })
-        }
-
-        function executeCommand(command) {
-          const args = command.split(' ')
-          let response
-
-          if (args[0] === 'projects' && args.length > 1) {
-            const projectName = args.slice(1).join(' ')
-            response =
-              projects[projectName] || `Projekt nicht gefunden: ${projectName}`
-          } else if (args[0] === 'personnel' && args.length > 1) {
-            const personnelName = args.slice(1).join(' ')
-            response =
-              personnel[personnelName] ||
-              `Mitarbeitende/r nicht gefunden: ${personnelName}`
-          } else if (commands[args[0]]) {
-            response = commands[args[0]]()
-          } else {
-            response = `Befehl nicht gefunden: ${command}`
-          }
-
-          if (response) {
-            const responseElement = document.createElement('p')
-            responseElement.className = 'output'
-            responseElement.innerHTML = response.replace(/\n/g, '<br>')
-            output.appendChild(responseElement)
-
-            redactWords(
-              responseElement,
-              'xrayAnalysis,Dr. Sarah Schmidt,DATENSPEICHER BESCHÄDIGT'
-            )
-          }
-
-          if (args[0] !== 'clear') {
-            const inputElement = document.createElement('p')
-            inputElement.className = 'output user-input'
-            inputElement.textContent = `user@TAXUS.net> ${command}`
-            output.appendChild(inputElement)
-          }
-          output.scrollTop = output.scrollHeight
-        }
-
-        function autocomplete(input) {
-          if (!input) return ''
-          const args = input.split(' ')
-          let matches = []
-          if (args.length === 1) {
-            matches = commandList.filter(cmd => cmd.startsWith(input))
-          } else if (args[0] === 'projects' && args.length === 2) {
-            matches = Object.keys(projects)
-              .map(proj => 'projects ' + proj)
-              .filter(cmd => cmd.startsWith(args[0] + ' ' + args[1]))
-          }
-          if (matches.length === 1) {
-            return matches[0]
-          } else if (matches.length > 1) {
-            const suggestionElement = document.createElement('p')
-            suggestionElement.className = 'output'
-            suggestionElement.innerHTML =
-              'Mögliche Befehle: ' + matches.join(', ')
-            output.appendChild(suggestionElement)
-            output.scrollTop = output.scrollHeight
-          }
-          return input
-        }
-
-        inputLine.addEventListener('keydown', function (event) {
-          cursor.style.display = 'none'
-          if (event.key === 'Enter') {
-            const command = inputLine.value.trim()
-            if (command) {
-              commandHistory.push(command)
-              historyIndex = commandHistory.length
-              inputLine.value = ''
-              executeCommand(command)
-            }
-          } else if (event.key === 'ArrowUp') {
-            if (historyIndex > 0) {
-              historyIndex--
-              inputLine.value = commandHistory[historyIndex]
-              setCursorToEnd(inputLine)
-            }
-          } else if (event.key === 'ArrowDown') {
-            if (historyIndex < commandHistory.length - 1) {
-              historyIndex++
-              inputLine.value = commandHistory[historyIndex]
-            } else {
-              historyIndex = commandHistory.length
-              inputLine.value = ''
-            }
-            setCursorToEnd(inputLine)
-          } else if (event.key === 'Tab') {
-            event.preventDefault()
-            const completed = autocomplete(inputLine.value)
-            inputLine.value = completed
-            setCursorToEnd(inputLine)
-          }
-        })
-
-        inputLine.addEventListener('keyup', function () {
-          cursor.style.display = 'inline-block'
-        })
-        inputLine.addEventListener('focus', function () {
-          cursor.style.display = 'inline-block'
-        })
-        inputLine.addEventListener('blur', function () {
-          cursor.style.display = 'none'
-        })
-
-        const art1 =
-          `                               ****         #                                                
+      // Define ASCII art
+      window.art1 = `                               ****         #                                                
                         ###*6u1x****====+xgrd                                                
                          ****+*****+=+**++*5vyb+***#*#        +++*                           
                  3u7x*   #**#*=++==++8chm*******++****#   #ym01++***                         
@@ -212,7 +51,7 @@
          *#*##%%%#####**rivq%*######8g3u*%%*# %%#++*+*nrqx#%#*++*#*+*tdrk*#####*#*+r213*     
          +#*****46h7******+ #%%zwms%%+**###% %#ywu2*#***#%#*++*#r18e#@%*#####fp9a*++**       
          *+ +++*j25r+=** *+**     %hyr5+*##%%%###%%mqw2#%%***#%8c9g%%####***##*#x8h7#        
-       +**#+**+= + =**m3y1##**     %@%%#i4ny%#***%##=*#####%     *652m**##*##*#1q0e          
+       +**#+**+= + =**m3y1##**     %@%%#i4ny%#***%##=*#####%     *652m**##*##*1q0e          
        +#*+*#**+++ly6g##%##  ##*#%#*dgim#+**##*###1u3n#**#*#*++ *##**+**74sf+=               
       *%#***81er####**#####*##xa0n#*++*#%###*+####r2cm*#%%##*##*#%%%###78ie%#*               
        *####****+ur9y* ##*#***+#  @%g4ta+##+*++++*+*##o0n4    %###%%%%%*+***%#               
@@ -224,10 +63,8 @@
                                 ######um1g#*#%%#**+*####*hrqf                                
                                 #%#### %#+*+*    %#*%#*rnyj %#*                              
                                 %#*  #**#**###    ##%###*+                                   
-`.split('\n')
-
-        const art2 =
-          `                               ****         #                                                
+`.split('\n');
+      window.art2 = `                               ****         #                                                
                         ###***++****====+****                                                
                          ****+*****+=+**++*****+***#*#        +++*                           
                  #****   #**#*=++==++=+*********++****#   #*+*+++***                         
@@ -259,91 +96,179 @@
                                 ########%*#*#%%#**+*####**###                                
                                 #%#### %#+*+*    %#*%#*+*## %#*                              
                                 %#*  #**#**###    ##%###*+                                   
-`.split('\n')
+`.split('\n');
 
-        const numCharsToMark = 28
-
-        function getLetterAndNumberPositions(art) {
-          const regex = /[a-zA-Z0-9]/;
-          const positions = [];
+      window.Terminal = class {
+        constructor() {
+          this.elements = {
+            inputLine: document.getElementById('input-line'),
+            cursor: document.querySelector('.cursor'),
+            output: document.getElementById('output'),
+            asciiArt: document.getElementById('ascii-art')
+          };
           
+          this.commandHistory = [];
+          this.historyIndex = -1;
+          this.commandList = Object.keys(commandDescriptions).concat(
+            Object.keys(projects)
+              .filter(proj => !proj.startsWith('x'))
+              .map(proj => 'projects ' + proj)
+          );
+        }
+
+        init() {
+          this.setupEventListeners();
+          this.processAsciiArt();
+          window.output = this.elements.output;
+        }
+
+        setupEventListeners() {
+          const boundKeyDown = this.handleKeyDown.bind(this);
+          const boundKeyUp = this.handleKeyUp.bind(this);
+          const boundFocus = this.handleFocus.bind(this);
+          const boundBlur = this.handleBlur.bind(this);
+
+          this.elements.inputLine.addEventListener('keydown', boundKeyDown);
+          this.elements.inputLine.addEventListener('keyup', boundKeyUp);
+          this.elements.inputLine.addEventListener('focus', boundFocus);
+          this.elements.inputLine.addEventListener('blur', boundBlur);
+        }
+
+        handleKeyDown(event) {
+          this.elements.cursor.style.display = 'none';
+          
+          if (event.key === 'Enter') {
+            const command = this.elements.inputLine.value.trim();
+            if (command) {
+              this.commandHistory.push(command);
+              this.historyIndex = this.commandHistory.length;
+              this.elements.inputLine.value = '';
+              this.executeCommand(command);
+            }
+          } else if (event.key === 'ArrowUp') {
+            if (this.historyIndex > 0) {
+              this.historyIndex--;
+              this.elements.inputLine.value = this.commandHistory[this.historyIndex];
+              this.setCursorToEnd(this.elements.inputLine);
+            }
+          } else if (event.key === 'ArrowDown') {
+            if (this.historyIndex < this.commandHistory.length - 1) {
+              this.historyIndex++;
+              this.elements.inputLine.value = this.commandHistory[this.historyIndex];
+            } else {
+              this.historyIndex = this.commandHistory.length;
+              this.elements.inputLine.value = '';
+            }
+            this.setCursorToEnd(this.elements.inputLine);
+          } else if (event.key === 'Tab') {
+            event.preventDefault();
+            const completed = this.autocomplete(this.elements.inputLine.value);
+            this.elements.inputLine.value = completed;
+            this.setCursorToEnd(this.elements.inputLine);
+          }
+        }
+
+        handleKeyUp() {
+          this.elements.cursor.style.display = 'inline-block';
+        }
+
+        handleFocus() {
+          this.elements.cursor.style.display = 'inline-block';
+        }
+
+        handleBlur() {
+          this.elements.cursor.style.display = 'none';
+        }
+
+        setCursorToEnd(element) {
+          setTimeout(() => {
+            element.setSelectionRange(element.value.length, element.value.length);
+          }, 0);
+        }
+
+        executeCommand(command) {
+          const args = command.split(' ');
+          let response;
+
+          if (args[0] === 'projects' && args.length > 1) {
+            const projectName = args.slice(1).join(' ');
+            response = projects[projectName] || `Projekt nicht gefunden: ${projectName}`;
+          } else if (args[0] === 'personnel' && args.length > 1) {
+            const personnelName = args.slice(1).join(' ');
+            response = personnel[personnelName] || `Mitarbeitende/r nicht gefunden: ${personnelName}`;
+          } else if (commands[args[0]]) {
+            response = commands[args[0]]();
+          } else {
+            response = `Befehl nicht gefunden: ${command}`;
+          }
+
+          this.displayResponse(response, command, args[0]);
+        }
+
+        displayResponse(response, command, commandType) {
+          if (response) {
+            const responseElement = document.createElement('p');
+            responseElement.className = 'output';
+            responseElement.innerHTML = response.replace(/\n/g, '<br>');
+            this.elements.output.appendChild(responseElement);
+          }
+
+          if (commandType !== 'clear') {
+            const inputElement = document.createElement('p');
+            inputElement.className = 'output user-input';
+            inputElement.textContent = `user@TAXUS.net> ${command}`;
+            this.elements.output.appendChild(inputElement);
+          }
+          this.elements.output.scrollTop = this.elements.output.scrollHeight;
+        }
+
+        processAsciiArt() {
+          const positions = this.findValidPositions(art1);
+          const randomPositions = this.getRandomPositionsFromFiltered(positions, CONFIG.TERMINAL.NUM_CHARS_TO_MARK);
+          const markedResult = this.markArtWithValidation(art2, randomPositions, art1);
+          this.elements.asciiArt.innerHTML = markedResult.art;
+        }
+
+        findValidPositions(art) {
+          const positions = [];
           art.forEach((line, row) => {
-            const chars = [...line];
-            chars.forEach((char, col) => {
-              if (regex.test(char)) {
-                positions.push({
-                  row,
-                  col,
-                  char,
-                  original: char // Store original character
-                });
+            [...line].forEach((char, col) => {
+              if (CONFIG.TERMINAL.REGEX.ALPHANUMERIC.test(char)) {
+                positions.push({ row, col, char });
               }
             });
           });
-          
           return positions;
         }
 
-        function getRandomPositionsFromFiltered(positions, count) {
-          if (!positions.length || count <= 0) return [];
+        getRandomPositionsFromFiltered(positions, count) {
+          if (!positions?.length || count <= 0) return [];
           
-          // Fisher-Yates shuffle implementation
           const shuffled = [...positions];
-          let currentIndex = shuffled.length;
-          
-          while (currentIndex > 0) {
-            const randomIndex = Math.floor(Math.random() * currentIndex);
-            currentIndex--;
-            [shuffled[currentIndex], shuffled[randomIndex]] = 
-            [shuffled[randomIndex], shuffled[currentIndex]];
+          for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
           }
-
-          // Sort by row and column for consistent display
+          
           return shuffled
             .slice(0, count)
-            .sort((a, b) => (a.row === b.row) ? (a.col - b.col) : (a.row - b.row));
+            .sort((a, b) => a.row === b.row ? a.col - b.col : a.row - b.row);
         }
 
-        function markArt(art2, positions) {
+        markArtWithValidation(art2, positions, art1) {
           if (!positions?.length || !art2?.length) return { art: '', chars: '' };
 
           const markedArt = art2.map(line => [...line]);
-          const charMap = {
-            original: [],
-            marked: [],
-            positions: []
-          };
+          const charMap = { original: [], marked: [], positions: [] };
 
-          // Filter out positions where art2 has spaces
           const validPositions = positions.filter(pos => {
-            const art2Char = art2[pos.row][pos.col];
-            return art2Char !== ' ' && art2Char !== '\n';
+            const art2Char = art2[pos.row]?.[pos.col];
+            return art2Char && art2Char !== ' ' && art2Char !== '\n';
           });
 
-          // Get replacement positions if needed
-          if (validPositions.length < numCharsToMark) {
-            const additionalPositions = getLetterAndNumberPositions(art2)
-              .filter(pos => {
-                // Filter out already used positions and spaces
-                const isUsed = validPositions.some(vPos => vPos.row === pos.row && vPos.col === pos.col);
-                const char = art2[pos.row][pos.col];
-                return !isUsed && char !== ' ' && char !== '\n';
-              });
-
-            // Add additional positions until we have enough
-            while (validPositions.length < numCharsToMark && additionalPositions.length > 0) {
-              const randomIndex = Math.floor(Math.random() * additionalPositions.length);
-              validPositions.push(additionalPositions.splice(randomIndex, 1)[0]);
-            }
-          }
-
-          // Sort final positions for consistent display
-          validPositions.sort((a, b) => a.row === b.row ? a.col - b.col : a.row - b.row);
-
-          // Mark positions and collect characters
           validPositions.forEach(pos => {
-            const art1Char = art1[pos.row].split('')[pos.col];
-            if (/[a-zA-Z0-9]/.test(art1Char)) {
+            const art1Char = art1[pos.row]?.[pos.col];
+            if (CONFIG.TERMINAL.REGEX.ALPHANUMERIC.test(art1Char)) {
               charMap.original.push(art1Char);
               charMap.marked.push(markedArt[pos.row][pos.col]);
               charMap.positions.push({ row: pos.row, col: pos.col });
@@ -351,32 +276,34 @@
             }
           });
 
-          try {
-            localStorage.setItem('originalMarkedChars', charMap.original.join(''));
-            console.log('Stored chars:', charMap.original.join('')); // For debugging
-          } catch (e) {
-            console.error('LocalStorage error:', e);
-          }
+          StorageManager.setItem(CONFIG.STORAGE.KEYS.MARKED_CHARS, charMap.original.join(''));
 
           return {
             art: markedArt.map(line => line.join('')).join('\n'),
             chars: charMap.marked.join('')
           };
         }
+      };
 
-        const positions = getLetterAndNumberPositions(art1)
-        console.log(positions)
-        const randomPositions = getRandomPositionsFromFiltered(
-          positions,
-          numCharsToMark
-        )
-        console.log(randomPositions        )
-        const markedResult = markArt(art2, randomPositions)
-        
-        const asciiArtContainer = document.getElementById('ascii-art')
-        asciiArtContainer.innerHTML = markedResult.art
-        
-      })
+      // Initialize terminal after all resources are loaded
+      window.addEventListener('DOMContentLoaded', () => {
+        // Ensure all scripts are loaded
+        if (!window.CONFIG || !window.commands) {
+          console.error('Required dependencies not loaded');
+          return;
+        }
+
+        try {
+          const terminal = new Terminal();
+          // Delay ASCII art processing slightly
+          setTimeout(() => {
+            terminal.init();
+          }, 100);
+        } catch (error) {
+          console.error('Terminal initialization error:', error);
+          document.body.innerHTML = '<div class="error">Error initializing terminal. Please refresh the page.</div>';
+        }
+      });
     </script>
   </body>
 </html>

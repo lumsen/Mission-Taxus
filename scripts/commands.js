@@ -1,191 +1,35 @@
-const CONSTANTS = {
-  MAX_ATTEMPTS: 4,
-  COUNTDOWN_TIME: 5,
-  CODE_LENGTH: 28,
-  STORAGE_KEY: 'unlockAttempts',
-  MESSAGE_TYPES: {
-    ERROR: 'error',
-    SUCCESS: 'success'
-  },
-  ERROR_MESSAGES: {
-    MAX_ATTEMPTS: 'Maximale Anzahl an Versuchen erreicht. Die Codeeingabe ist nicht mehr möglich. Bitte folgen Sie dem Resetprotokoll gemäß Anweisung TAX:0815:001.',
-    INVALID_CODE: 'Ungültiger Code. Bitte versuchen Sie es erneut.',
-    CODE_ACCEPTED: 'Code akzeptiert. LockDown wird entsperrt.'
-  },
-  STORAGE_KEYS: {
-    ATTEMPTS: 'unlockAttempts',
-    MARKED_CHARS: 'originalMarkedChars'
-  }
+window.StorageManager = {
+    getItem(key) {
+        try {
+            return localStorage.getItem(key);
+        } catch (e) {
+            console.error('Storage error:', e);
+            return null;
+        }
+    },
+
+    setItem(key, value) {
+        try {
+            localStorage.setItem(key, value);
+            return true;
+        } catch (e) {
+            console.error('Storage error:', e);
+            return false;
+        }
+    }
 };
 
-const commandDescriptions = {
+// Make everything globally available first
+window.commandDescriptions = {
   clear: 'Löscht das Terminalfenster.',
   help: 'Zeigt die Liste der verfügbaren Befehle an.',
   about: 'Zeigt Informationen über diese simulierte Terminal-Seite an.',
-  projects: 'Zeigt die verfügbaren Projekte an, außer Projekten, die mit "x" beginnen.',
+  projects: 'Zeigt die verfügbaren Projekte an.',
   contact: 'Zeigt Kontaktinformationen an.',
   organigramm: 'Zeigt das Organigramm der Forschungseinrichtung "Station Taxus" an.'
-}
+};
 
-const messageQueue = [];
-let messageDisplaying = false;
-
-function showMessage(type, message, timeout = 5000) {
-  const messageData = { type, message, timeout };
-  messageQueue.push(messageData);
-  if (!messageDisplaying) {
-    displayNextMessage();
-  }
-}
-
-function displayNextMessage() {
-  if (messageQueue.length === 0) {
-    messageDisplaying = false;
-    return;
-  }
-
-  messageDisplaying = true;
-  const { type, message, timeout } = messageQueue.shift();
-  
-  const messageElement = document.createElement('div');
-  messageElement.className = `popup-message ${type}`;
-  messageElement.innerHTML = `<p>${message}</p>`;
-  document.body.appendChild(messageElement);
-
-  setTimeout(() => {
-    document.body.removeChild(messageElement);
-    displayNextMessage();
-  }, timeout);
-}
-
-const commands = {
-  clear: function () {
-    output.innerHTML = ''
-  },
-  help: function () {
-    return Object.keys(commandDescriptions)
-      .map(cmd => `<b>${cmd}</b>: ${commandDescriptions[cmd]}`)
-      .join('\n')
-  },
-  about: function () {
-    return 'Dies ist eine simulierte Terminal-Seite.'
-  },
-  projects: function () {
-    const projectList = Object.keys(projects).join(', ')
-    return `Verfügbare Projekte: ${projectList}`
-  },
-  contact: function () {
-    return 'Kontakt: email.SC-T@cmr.com'
-  },
-  userData: function () {
-    const personnelList = Object.keys(personnel).join(', \n ')
-    return `Liste der Mitarbeitenden: ${personnelList}`
-  },
-  organigramm: function () {
-    return `
-<span class="color2">Organigramm der Forschungseinrichtung "Station Taxus"</span>
-    Stationsleitung: Dr. Helen Warden
-    Stellv. Stationsleitung: Dr. Simon Verner
-    |
-    +-- Medizin (SC-T/MZ)
-    |   Teamleiter medizinische Forschung: Dr. Konrad Schirmer
-    |   +-- Arzt: Dr. Julian Zellmann
-    |   |   +-- Arzt: Dr. Robert Sievers
-    |   |   +-- Pädiaterin: Dr. Marion Nestler
-    |   +-- Pathologe: Dr. Franz Limbus
-    |   |   +-- Pflegefachmann: Simon Nachtigall
-    |
-    +-- Medizin-Psychologie (SC-T/MPZ)
-    |   Teamleiter Psychologie: Dr. Stefan Kramme
-    |   +-- Psychiater: Dr. Torsten Oberdorfer
-    |   +-- Psychologische Psychotherapeutin: Maria Riedmann
-    |
-    +-- Pharmakologie (SC-T/PZ)
-    |   Teamleiterin pharmakologische Forschung: Dr. Petra Pharmon
-    |   +-- Biochemiker: Dr. Tobias Isomer
-    |   |   +-- Chemielaborant: Lukas Reagens
-    |   +-- Pharmakologe: Dr. Max Vitamer
-    |   |   +-- PTA: Julia Pulvermann
-    |
-    +-- Veterinär (SC-T/VZ)
-    |   Teamleiterin Veterinärforschung: Dr. Viktoria Petermann
-    |   +-- Veterinär: Dr. Leon Wiesler
-    |   +-- Wissenschaftlicher Mitarbeiter: Dr. Victor Forscher
-    |   +-- Tierpfleger: Jan Albrecht
-    |
-    +-- Sicherheit (SC-T/IS)
-    |   Teamleiter Sicherheit: Bernd Wachter
-    |   +-- Sicherheit: Erik Schildmann
-    |   +-- Sicherheit: Lars Wächter
-    |
-    +-- Verwaltung (SC-T/VT)
-        Teamleiter Verwaltung: Carsten Orlich
-        +-- Verwaltungsfachangestellte: Annika Metz-Schimmel
-        |   +-- IT: Ansgar Kode
-        +-- Hausmeister: Anton Kehrig
-        |   +-- Koch: Marcel Breuer
-		
-Aufrufen der einzelnen Mitarbeitenden nach dem Schema: personnel vornameNachname
-          `
-  },
-  unlock: function () {
-    let attempts = 0;
-    try {
-      attempts = parseInt(localStorage.getItem(CONSTANTS.STORAGE_KEYS.ATTEMPTS)) || 0;
-    } catch (e) {
-      console.error('LocalStorage error:', e);
-    }
-
-    if (attempts >= CONSTANTS.MAX_ATTEMPTS) {
-      showMessage(CONSTANTS.MESSAGE_TYPES.ERROR, CONSTANTS.ERROR_MESSAGES.MAX_ATTEMPTS);
-      return;
-    }
-
-    const storedChars = localStorage.getItem(CONSTANTS.STORAGE_KEYS.MARKED_CHARS);
-    if (!storedChars) {
-      showMessage(CONSTANTS.MESSAGE_TYPES.ERROR, 'Keine gespeicherten Zeichen gefunden.');
-      return;
-    }
-
-    const popup = document.createElement('div');
-    popup.id = 'unlock-popup';
-    popup.innerHTML = `
-      <div class="popup-content">
-        <p>Bitte geben Sie den ${CONSTANTS.CODE_LENGTH}-stelligen Code zum Entsperren des LockDowns ein:</p>
-        <input type="text" id="unlock-code" maxlength="${CONSTANTS.CODE_LENGTH}" />
-        <button id="unlock-submit">Submit</button>
-        <button id="unlock-cancel">Cancel</button>
-      </div>
-    `;
-
-    const cleanup = () => document.body.removeChild(popup);
-    
-    const handleSubmit = () => {
-      const code = document.getElementById('unlock-code').value;
-      if (code === storedChars) {
-        showMessage(CONSTANTS.MESSAGE_TYPES.SUCCESS, CONSTANTS.ERROR_MESSAGES.CODE_ACCEPTED);
-        cleanup();
-        localStorage.removeItem(CONSTANTS.STORAGE_KEYS.ATTEMPTS);
-      } else {
-        attempts++;
-        localStorage.setItem(CONSTANTS.STORAGE_KEYS.ATTEMPTS, attempts);
-        handleInvalidCode(attempts, cleanup);
-      }
-    };
-
-    document.body.appendChild(popup);
-    const unlockInput = document.getElementById('unlock-code');
-    
-    document.getElementById('unlock-submit').addEventListener('click', handleSubmit);
-    document.getElementById('unlock-cancel').addEventListener('click', cleanup);
-    unlockInput.addEventListener('keydown', e => e.key === 'Enter' && handleSubmit());
-    
-    popup.style.pointerEvents = 'auto';
-    unlockInput.focus();
-  }
-}
-
-const projects = {
+window.projects = {
   gasPipeline: `
 Projektname: <span class="color1">Gas Pipeline Expansion</span>
 Beschreibung:
@@ -244,9 +88,9 @@ Ziele:
 Status: In Bearbeitung
 Verantwortlicher: Dr. Xavier Charles 
   `
-}
+};
 
-const personnel = {
+window.personnel = {
   heleneWarden: `
 Name: <span class="color1">Dr. Helene Warden</span>
 Funktion:
@@ -576,4 +420,190 @@ Bemerkung:
   Letzter Login: -
   Bemerkung: 
   `
+};
+
+window.commands = {
+  // Basic commands
+  clear: () => { output.innerHTML = ''; },
+  help: () => Object.keys(commandDescriptions)
+    .map(cmd => `<b>${cmd}</b>: ${commandDescriptions[cmd]}`)
+    .join('\n'),
+  about: () => 'Dies ist eine simulierte Terminal-Seite.',
+  contact: () => 'Kontakt: email.SC-T@cmr.com',
+  
+  // Project and personnel commands
+  projects: () => `Verfügbare Projekte: ${Object.keys(projects).join(', ')}`,
+  userData: () => `Liste der Mitarbeitenden: ${Object.keys(personnel).join(', \n ')}`,
+  
+  // Complex commands
+  organigramm: () => `
+    <span class="color2">Organigramm der Forschungseinrichtung "Station Taxus"</span>
+    Stationsleitung: Dr. Helen Warden
+    Stellv. Stationsleitung: Dr. Simon Verner
+    |
+    +-- Medizin (SC-T/MZ)
+    |   Teamleiter medizinische Forschung: Dr. Konrad Schirmer
+    |   +-- Arzt: Dr. Julian Zellmann
+    |   |   +-- Arzt: Dr. Robert Sievers
+    |   |   +-- Pädiaterin: Dr. Marion Nestler
+    |   +-- Pathologe: Dr. Franz Limbus
+    |   |   +-- Pflegefachmann: Simon Nachtigall
+    |
+    +-- Medizin-Psychologie (SC-T/MPZ)
+    |   Teamleiter Psychologie: Dr. Stefan Kramme
+    |   +-- Psychiater: Dr. Torsten Oberdorfer
+    |   +-- Psychologische Psychotherapeutin: Maria Riedmann
+    |
+    +-- Pharmakologie (SC-T/PZ)
+    |   Teamleiterin pharmakologische Forschung: Dr. Petra Pharmon
+    |   +-- Biochemiker: Dr. Tobias Isomer
+    |   |   +-- Chemielaborant: Lukas Reagens
+    |   +-- Pharmakologe: Dr. Max Vitamer
+    |   |   +-- PTA: Julia Pulvermann
+    |
+    +-- Veterinär (SC-T/VZ)
+    |   Teamleiterin Veterinärforschung: Dr. Viktoria Petermann
+    |   +-- Veterinär: Dr. Leon Wiesler
+    |   +-- Wissenschaftlicher Mitarbeiter: Dr. Victor Forscher
+    |   +-- Tierpfleger: Jan Albrecht
+    |
+    +-- Sicherheit (SC-T/IS)
+    |   Teamleiter Sicherheit: Bernd Wachter
+    |   +-- Sicherheit: Erik Schildmann
+    |   +-- Sicherheit: Lars Wächter
+    |
+    +-- Verwaltung (SC-T/VT)
+        Teamleiter Verwaltung: Carsten Orlich
+        +-- Verwaltungsfachangestellte: Annika Metz-Schimmel
+        |   +-- IT: Ansgar Kode
+        +-- Hausmeister: Anton Kehrig
+        |   +-- Koch: Marcel Breuer
+		
+Aufrufen der einzelnen Mitarbeitenden nach dem Schema: personnel vornameNachname
+  `,
+  
+  unlock: function() {
+    const attempts = getStoredAttempts();
+    if (!validateUnlockAttempts(attempts)) return;
+    
+    const storedChars = getStoredChars();
+    if (!storedChars) return;
+    
+    createAndShowUnlockPopup(attempts);
+  }
+};
+
+// Move constants to window
+window.CONSTANTS = {
+  MAX_ATTEMPTS: 4,
+  COUNTDOWN_TIME: 5,
+  CODE_LENGTH: 28,
+  STORAGE_KEYS: {
+    ATTEMPTS: 'unlockAttempts',
+    MARKED_CHARS: 'originalMarkedChars'
+  },
+  MESSAGE_TYPES: {
+    ERROR: 'error',
+    SUCCESS: 'success',
+    INFO: 'info'
+  },
+  ERROR_MESSAGES: {
+    MAX_ATTEMPTS: 'Maximale Anzahl an Versuchen erreicht...',
+    INVALID_CODE: 'Ungültiger Code. Bitte versuchen Sie es erneut.',
+    CODE_ACCEPTED: 'Code akzeptiert. LockDown wird entsperrt.',
+    STORAGE_ERROR: 'Fehler beim Zugriff auf den Speicher.',
+    NO_CHARS: 'Keine gespeicherten Zeichen gefunden.'
+  },
+  POPUP: {
+    CLOSE_DELAY: 5000,
+    ERROR_DELAY: 3000
+  },
+  DOM_CLASSES: {
+    ERROR: 'error',
+    SUCCESS: 'success',
+    POPUP: 'popup-message'
+  }
+};
+
+// Make helper functions globally available
+window.showMessage = function(type, message, timeout = CONSTANTS.POPUP.CLOSE_DELAY) {
+  try {
+    const messageElement = document.createElement('div');
+    messageElement.className = `${CONSTANTS.DOM_CLASSES.POPUP} ${type}`;
+    messageElement.innerHTML = `<p>${message}</p>`;
+    document.body.appendChild(messageElement);
+    
+    setTimeout(() => {
+      if (messageElement.parentNode) {
+        document.body.removeChild(messageElement);
+      }
+    }, timeout);
+  } catch (error) {
+    console.error('Error showing message:', error);
+  }
+};
+
+// Helper functions
+function getStoredAttempts() {
+  try {
+    return parseInt(localStorage.getItem(CONSTANTS.STORAGE_KEYS.ATTEMPTS)) || 0;
+  } catch (e) {
+    console.error('LocalStorage error:', e);
+    return 0;
+  }
+}
+
+function validateUnlockAttempts(attempts) {
+  if (attempts >= CONSTANTS.MAX_ATTEMPTS) {
+    showMessage(CONSTANTS.MESSAGE_TYPES.ERROR, CONSTANTS.ERROR_MESSAGES.MAX_ATTEMPTS);
+    return false;
+  }
+  return true;
+}
+
+function getStoredChars() {
+  const chars = localStorage.getItem(CONSTANTS.STORAGE_KEYS.MARKED_CHARS);
+  if (!chars) {
+    showMessage(CONSTANTS.MESSAGE_TYPES.ERROR, CONSTANTS.ERROR_MESSAGES.NO_CHARS);
+    return null;
+  }
+  return chars;
+}
+
+function createAndShowUnlockPopup(attempts) {
+  const popup = document.createElement('div');
+  popup.id = 'unlock-popup';
+  popup.innerHTML = `
+    <div class="popup-content">
+      <p>Bitte geben Sie den ${CONSTANTS.CODE_LENGTH}-stelligen Code zum Entsperren des LockDowns ein:</p>
+      <input type="text" id="unlock-code" maxlength="${CONSTANTS.CODE_LENGTH}" />
+      <button id="unlock-submit">Submit</button>
+      <button id="unlock-cancel">Cancel</button>
+    </div>
+  `;
+
+  const cleanup = () => document.body.removeChild(popup);
+  
+  const handleSubmit = () => {
+    const code = document.getElementById('unlock-code').value;
+    if (code === storedChars) {
+      showMessage(CONSTANTS.MESSAGE_TYPES.SUCCESS, CONSTANTS.ERROR_MESSAGES.CODE_ACCEPTED);
+      cleanup();
+      localStorage.removeItem(CONSTANTS.STORAGE_KEYS.ATTEMPTS);
+    } else {
+      attempts++;
+      localStorage.setItem(CONSTANTS.STORAGE_KEYS.ATTEMPTS, attempts);
+      handleInvalidCode(attempts, cleanup);
+    }
+  };
+
+  document.body.appendChild(popup);
+  const unlockInput = document.getElementById('unlock-code');
+  
+  document.getElementById('unlock-submit').addEventListener('click', handleSubmit);
+  document.getElementById('unlock-cancel').addEventListener('click', cleanup);
+  unlockInput.addEventListener('keydown', e => e.key === 'Enter' && handleSubmit());
+  
+  popup.style.pointerEvents = 'auto';
+  unlockInput.focus();
 }

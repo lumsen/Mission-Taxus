@@ -1,16 +1,38 @@
 :root {
+  /* Core theme colors */
   --bg-color: #2e2e2e;
   --text-color: #00ff00;
   --text-color-dim: #208d20;
-  --font-family: "Courier New", Courier, "Lucida Console", monospace;
-  /* Add color variables for consistency */
+  --text-error: #ff0000;
+  --text-color-faded: rgba(255, 0, 0, 0.3);
+  
+  /* Accent colors */
   --color1: #ff4500;
   --color2: #1e90ff;
   --color3: #32cd32;
   --color4: #9400d3;
+  
+  /* Typography */
+  --font-family: "Courier New", Courier, "Lucida Console", monospace;
+  --font-size-base: 1em;
+  
+  /* Layout */
+  --terminal-width: 80%;
+  --terminal-height: 70%;
+  --padding-base: 20px;
+  
+  /* Z-index layers */
+  --z-index-base: 0;
+  --z-index-content: 2;
+  --z-index-popup: 1000;
+  --z-index-message: 1001;
+  
+  /* Animations */
+  --blink-speed: 1s;
+  --glitch-speed: 6s;
 }
 
-/* Styling for the body */
+/* Base styles */
 body {
   background-color: var(--bg-color);
   color: var(--text-color);
@@ -23,70 +45,87 @@ body {
   pointer-events: none;
 }
 
-/* Styling for the terminal */
-#terminal {
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  width: 80%;
-  height: 70%;
-  padding: 20px;
-  border: 1px solid var(--text-color);
-  overflow-y: auto;
-  white-space: pre-wrap;
+/* Terminal elements - shared styles */
+#terminal,
+#ascii-art-container,
+#output,
+#input-container {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+  background-color: var(--bg-color);
 }
 
-/* Hide scrollbar */
-#terminal::-webkit-scrollbar {
-  width: 0px;
+/* Terminal Core */
+#terminal {
+  position: relative;
+  width: var(--terminal-width);
+  height: var(--terminal-height);
+  padding: var(--padding-base);
+  border: 1px solid var(--text-color);
+  overflow: hidden;
+  white-space: pre-wrap;
+  display: flex;
+  flex-direction: column;
+  z-index: var(--z-index-content);
+  background-color: rgba(46, 46, 46, 0.95); /* Leicht transparenter Hintergrund */
+}
+
+/* Hide all scrollbars */
+#terminal::-webkit-scrollbar,
+#output::-webkit-scrollbar {
+  width: 0;
   background: transparent;
 }
 
 /* Styling for ASCII art container */
 #ascii-art-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   pointer-events: none;
+  z-index: var(--z-index-base);
+  overflow: hidden;
+  background-color: transparent;
 }
 
 /* Styling for ASCII art */
 #ascii-art {
-  position: absolute;
-  color: red;
-  opacity: 0.5;
+  position: relative;
+  color: var(--text-color-faded);
   font-family: var(--font-family);
   white-space: pre;
   pointer-events: none;
-  z-index: 0;
+  font-size: 0.6em;
+  line-height: 1;
+  user-select: none;
+  opacity: 0.9;
+  text-align: center;
+  transform: scale(1.85);
+  margin: auto;
 }
 
 /* Styling for output */
 #output {
-  z-index: 1;
+  position: relative;
+  z-index: var(--z-index-content);
   overflow-y: auto;
   flex-grow: 1;
   pointer-events: auto;
-}
-
-#output::-webkit-scrollbar {
-  width: 0px;
-  background: transparent;
+  margin: 0 0 20px 0;
+  background-color: transparent;
+  width: 100%;
+  height: auto;
 }
 
 /* Styling for input container */
 #input-container {
   display: flex;
   align-items: center;
-  z-index: 1;
+  z-index: var(--z-index-content);
   width: 100%;
   color: var(--text-color-dim);
   pointer-events: auto;
@@ -94,6 +133,7 @@ body {
   padding: 0;
   border-radius: 0;
   box-shadow: 0 0 1px var(--text-color);
+  margin-top: auto;
 }
 
 /* Styling for prompt */
@@ -107,7 +147,7 @@ body {
   border: none;
   color: var(--text-color);
   font-family: var(--font-family);
-  font-size: 1em;
+  font-size: var(--font-size-base);
   width: 100%;
   outline: none;
   pointer-events: auto;
@@ -128,7 +168,7 @@ body {
   display: inline-block;
   background-color: var(--text-color);
   margin-left: 2px;
-  animation: blink 1s steps(2, start) infinite;
+  animation: blink var(--blink-speed) steps(2, start) infinite;
 }
 
 /* Blink animation for cursor */
@@ -176,7 +216,7 @@ body {
   color: inherit;
   font-family: inherit;
   font-size: inherit;
-  animation: cray 6s infinite steps(50);
+  animation: cray var(--glitch-speed) infinite steps(50);
   display: inline-block;
   line-height: 1;
 }
@@ -239,11 +279,10 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: var(--bg-color);
   color: var(--text-color);
   padding: 20px;
   border: 1px solid var(--text-color);
-  z-index: 1000;
+  z-index: var(--z-index-popup);
   pointer-events: auto;
 }
 
@@ -277,18 +316,17 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: var(--bg-color);
   color: var(--text-color);
   padding: 20px;
   border: 1px solid var(--text-color);
-  z-index: 1001;
+  z-index: var(--z-index-message);
   pointer-events: none;
   text-align: center;
   font-family: var(--font-family);
 }
 
 .popup-message.error {
-  background-color: #ff0000;
+  background-color: var(--text-error);
   color: #ffffff;
-  border: 1px solid #ff0000;
+  border: 1px solid var(--text-error);
 }
