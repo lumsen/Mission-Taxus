@@ -61,12 +61,13 @@ body {
   height: var(--terminal-height);
   padding: var(--padding-base);
   border: 1px solid var(--text-color);
-  overflow: hidden;
+  overflow: auto; /* Ensure the terminal can scroll if content overflows */
   white-space: pre-wrap;
   display: flex;
   flex-direction: column;
   z-index: var(--z-index-content);
   background-color: rgba(46, 46, 46, 0.95); /* Leicht transparenter Hintergrund */
+  justify-content: flex-start; /* Ensure content starts from the top */
 }
 
 /* Hide all scrollbars */
@@ -88,8 +89,9 @@ body {
   align-items: center;
   pointer-events: none;
   z-index: var(--z-index-base);
-  overflow: hidden;
+  overflow: auto; /* Ensure the ASCII art container can scroll if content overflows */
   background-color: transparent;
+  flex-shrink: 0; /* Prevent shrinking */
 }
 
 /* Styling for ASCII art */
@@ -104,7 +106,7 @@ body {
   user-select: none;
   opacity: 0.9;
   text-align: center;
-  transform: scale(1.85);
+  transform: scale(1); /* Adjust scale to ensure the entire ASCII art is visible */
   margin: auto;
 }
 
@@ -134,6 +136,7 @@ body {
   border-radius: 0;
   box-shadow: 0 0 1px var(--text-color);
   margin-top: auto;
+  flex-shrink: 0; /* Prevent shrinking */
 }
 
 /* Styling for prompt */

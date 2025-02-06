@@ -635,6 +635,11 @@ function createAndShowUnlockPopup(attempts) {
             isProcessing = false;
           }, CONSTANTS.POPUP.ERROR_DELAY);
         }
+
+        // Refresh the page 3 seconds after the popup disappears
+        setTimeout(() => {
+          window.location.reload();
+        }, CONSTANTS.POPUP.ERROR_DELAY + 3000);
       }
     } catch (error) {
       console.error('Submit error:', error);

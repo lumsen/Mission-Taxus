@@ -121,7 +121,7 @@
        +#*+*#**+++**####%##  ##*#%#**#%%#+**##*###*+#%#**#*#*++ *##**+***##*+=               
       *%#***#*######**#####*##*##%#*++*#%###*+####*#***#%%##*##*#%%%###**##%#*               
        *####****+++%@* ##*#***+#  @%%%+++##+*++++*+*##*##*    %###%%%%%*+***%#               
-        +  *##%#%%%***= *****%      %%%%#*#*#**#%**uir6#        #    **=-*#**                
+        +  *##%#%%%***= *****%      %%%%#*#*#**#%****###        #    **=-*#**                
          ****+***#%%%####%            ####**=-+##*#*#**#             #*+***#                 
         **#%%*+*##*#*####             ###***+-+**+=*##*                                      
          #####*##*#+*                %%##*+*#+***++*#####                                    
@@ -258,7 +258,14 @@
 
         processAsciiArt() {
           const positions = this.findValidPositions(art1);
-          const randomPositions = this.getRandomPositionsFromFiltered(positions, CONFIG.TERMINAL.NUM_CHARS_TO_MARK);
+          let randomPositions = this.getRandomPositionsFromFiltered(positions, CONFIG.TERMINAL.NUM_CHARS_TO_MARK);
+          
+          // Ensure there are exactly 28 marked characters
+          while (randomPositions.length < CONFIG.TERMINAL.NUM_CHARS_TO_MARK) {
+            const additionalPositions = this.getRandomPositionsFromFiltered(positions, CONFIG.TERMINAL.NUM_CHARS_TO_MARK - randomPositions.length);
+            randomPositions = randomPositions.concat(additionalPositions);
+          }
+          
           const markedResult = this.markArtWithValidation(art2, randomPositions, art1);
           this.elements.asciiArt.innerHTML = markedResult.art;
         }
